@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIT 601 - Part 4: Multimedia, Development & Implementation</title>
+  
+  <link rel="icon" href="icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icon-512.png">
+
+  <style>
+    :root {
+      --primary: #003366;
+      --primary-dark: #001f4d;
+      --primary-light: #e6f0ff;
+      --yellow: #f2a900;
+      --yellow-light: #fff8e6;
+      --red: #d90429;
+      --red-light: #ffe5e8;
+      --white: #ffffff;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f5;
+      --gray-200: #e9ecef;
+      --gray-700: #495057;
+      --gray-900: #212529;
+      --success: #2b9348;
+      --border-radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 20px 20px;
+      border-bottom: 6px solid var(--yellow);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-badge {
+      width: 65px;
+      height: 65px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 3px solid var(--yellow);
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .header-text h1 {
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .motto-ribbon {
+      display: inline-block;
+      background-color: var(--yellow);
+      color: var(--primary-dark);
+      font-weight: bold;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .compiler-text {
+      color: var(--white);
+      font-size: 0.9rem;
+      margin-top: 8px;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    .module-dropdown {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 2px solid var(--yellow);
+      background: var(--white);
+      color: var(--primary-dark);
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 100%;
+    }
+
+    /* NAVIGATION TABS */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .nav-btn {
+      padding: 16px 18px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+    }
+
+    /* MAIN CONTENT WRAPPER */
+    .app-layout {
+      flex-grow: 1;
+    }
+
+    .module-wrapper {
+      display: none;
+    }
+
+    .module-wrapper.active {
+      display: block;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px 50px 15px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* CARDS & FORMATTING */
+    .card {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .card-title {
+      color: var(--primary);
+      font-size: 1.3rem;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title {
+      color: var(--primary-dark);
+      font-size: 1.15rem;
+      margin: 24px 0 10px 0;
+      border-left: 4px solid var(--yellow);
+      padding-left: 10px;
+    }
+
+    .alert-box {
+      background: var(--yellow-light);
+      border-left: 5px solid var(--yellow);
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      font-size: 0.95rem;
+    }
+
+    .info-box {
+      background: var(--primary-light);
+      border-left: 5px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      font-size: 0.95rem;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* SCENARIO LAB / INTERACTIVE */
+    .scenario-box {
+      border-left: 4px solid var(--primary);
+      background: var(--gray-50);
+      padding: 16px;
+      margin-bottom: 24px;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      margin: 8px 0;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+
+    .option-btn:hover {
+      background: var(--gray-100);
+      border-color: var(--primary);
+    }
+
+    .feedback-box {
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.95rem;
+      display: none;
+      font-weight: 500;
+    }
+
+    .feedback-correct {
+      background: #e8f5e9;
+      color: #1b5e20;
+      border: 1px solid #a5d6a7;
+    }
+
+    .feedback-wrong {
+      background: var(--red-light);
+      color: #b71c1c;
+      border: 1px solid #ef9a9a;
+    }
+
+    /* TABLES */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      min-width: 600px;
+    }
+
+    th, td {
+      border: 1px solid var(--gray-200);
+      padding: 12px;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    th {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--gray-50);
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: var(--white);
+      border-top: 1px solid var(--gray-200);
+      padding: 24px 20px;
+      text-align: center;
+      color: var(--gray-700);
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="header-left">
+        <div class="logo-badge">UCC</div>
+        <div class="header-text">
+          <h1>University of Cape Coast</h1>
+          <div><span class="motto-ribbon">MIT 601: Instructional Design</span></div>
+          <div class="compiler-text">Compiled by Prince Osei (ED/ITD/25/0026)<br>Prepared by Amponsah Dennis</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <select class="module-dropdown" onchange="switchModule(this.value)">
+          <option value="module-topic9">Topic 9: Multimedia & UDL</option>
+          <option value="module-topic10">Topic 10: Developing Materials</option>
+          <option value="module-topic11">Topic 11: Online Course Design</option>
+          <option value="module-topic12">Topic 12: Implementation & Management</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    
+    <!-- ========================================== -->
+    <!-- TOPIC 9: MULTIMEDIA & UDL                  -->
+    <!-- ========================================== -->
+    <div id="module-topic9" class="module-wrapper active">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t9-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t9-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t9-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 9: Multimedia Learning and Universal Design for Learning (UDL)</h2>
+            <p><strong>Week 9 | Mayer's cognitive theory of multimedia learning, cognitive load, UDL guidelines</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>Today, much learning content mixes words and pictures: slides, videos, animations and e-learning modules. But more media does not automatically mean better learning. Poorly designed multimedia can confuse and overload learners. This topic explains how people learn from words and pictures and how to design media so that all learners, including those with disabilities, can learn.</p>
+            <p>Two frameworks are central: Mayer's Cognitive Theory of Multimedia Learning (CTML) and Universal Design for Learning (UDL).</p>
+
+            <h3 class="section-title">1. Multimedia Learning: Basic Idea</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> Multimedia learning is learning from words (spoken or written) and pictures (illustrations, photos, animations, video). Richard Mayer's simple statement: people learn better from words and pictures than from words alone.
+            </div>
+
+            <h3 class="section-title">2. Mayer's Cognitive Theory of Multimedia Learning (CTML)</h3>
+            <p>CTML rests on three assumptions about how the mind works:</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Assumption</th>
+                    <th>Meaning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Dual channels</td><td>We process visual/pictorial material and auditory/verbal material in two separate channels</td></tr>
+                  <tr><td>Limited capacity</td><td>Each channel can process only a small amount at one time</td></tr>
+                  <tr><td>Active processing</td><td>Learning requires attending, organising information and integrating it with prior knowledge</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>The learner selects relevant words and images, organises them into coherent mental models, and integrates them with existing knowledge stored in long-term memory.</p>
+
+            <h3 class="section-title">Three types of cognitive processing demands</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Meaning</th>
+                    <th>Design aim</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Extraneous</td><td>Wasted effort caused by poor design (clutter, distractions)</td><td>Reduce</td></tr>
+                  <tr><td>Essential</td><td>Effort to understand the core material (its complexity)</td><td>Manage (for example, by chunking)</td></tr>
+                  <tr><td>Generative</td><td>Deeper effort to make sense of the material</td><td>Foster (motivation, practice, questions)</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">3. Mayer's Principles of Multimedia Design</h3>
+            <p><strong>A. Principles for reducing extraneous processing</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Principle</th>
+                    <th>Meaning</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Coherence</td><td>Remove unnecessary words, music and images</td><td>Delete decorative clip art and background music</td></tr>
+                  <tr><td>Signalling</td><td>Highlight the essential material</td><td>Bold key terms, arrows, colour</td></tr>
+                  <tr><td>Redundancy</td><td>Do not add on-screen text that repeats narration</td><td>Narrate a diagram; do not also place the same full sentences</td></tr>
+                  <tr><td>Spatial contiguity</td><td>Place related words and pictures near each other</td><td>Labels next to diagram parts, not in a legend far away</td></tr>
+                  <tr><td>Temporal contiguity</td><td>Present related words and pictures at the same time</td><td>Narration plays while the animation shows the same step</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>B. Principles for managing essential processing</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Principle</th>
+                    <th>Meaning</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Segmenting</td><td>Break lessons into learner-paced parts</td><td>Short video chunks with a "Next" button</td></tr>
+                  <tr><td>Pre-training</td><td>Teach key terms/concepts first</td><td>Introduce component names before the animation</td></tr>
+                  <tr><td>Modality</td><td>Use graphics with narration rather than on-screen text</td><td>Spoken explanation of a diagram</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>C. Principles for fostering generative processing</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Principle</th>
+                    <th>Meaning</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Multimedia</td><td>Words + pictures are better than words alone</td><td>Add a diagram to a text explanation</td></tr>
+                  <tr><td>Personalisation</td><td>Use conversational language</td><td>"You will now create..." rather than formal passive text</td></tr>
+                  <tr><td>Voice</td><td>A friendly human voice is better than a machine voice</td><td>Teacher records narration</td></tr>
+                  <tr><td>Embodiment</td><td>Human-like gestures in videos</td><td>Instructor points to elements</td></tr>
+                  <tr><td>Image</td><td>Instructor's image on screen is not always necessary</td><td>Use only if it helps</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert-box">
+              <strong>Key Point:</strong> Easy way to remember the big three groups: Reduce clutter, Manage complexity, Foster deep thinking.
+            </div>
+
+            <h3 class="section-title">4. Cognitive Load Theory (Sweller)</h3>
+            <ul>
+              <li>Working memory is limited, so too much information at once causes overload.</li>
+              <li><strong>Intrinsic load:</strong> difficulty of the content itself.</li>
+              <li><strong>Extraneous load:</strong> caused by poor design; reduce it.</li>
+              <li><strong>Germane load:</strong> effort that builds schemas; encourage it.</li>
+            </ul>
+            <div class="info-box">
+              <strong>Example:</strong> A slide with 120 words, three fonts, animation and background music overloads the learner. A redesigned slide with one diagram, three labelled points and spoken explanation lowers the load.
+            </div>
+
+            <h3 class="section-title">5. Universal Design for Learning (UDL)</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> UDL is a framework (developed by CAST) for designing learning experiences that are accessible and effective for all learners from the start, rather than adjusting for individuals later.
+            </div>
+            <p>The idea comes from architecture: a ramp built into a building from the beginning helps wheelchair users, parents with prams and people carrying loads. In the same way, captions in videos help deaf learners, second-language learners and learners in noisy places.</p>
+            
+            <p><strong>Three principles of UDL</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Principle</th>
+                    <th>The "why/what/how"</th>
+                    <th>Means</th>
+                    <th>Examples</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Engagement</td>
+                    <td>The WHY of learning</td>
+                    <td>Multiple means of engagement: motivate and sustain interest</td>
+                    <td>Choice of topics, relevant tasks, collaboration, goal-setting</td>
+                  </tr>
+                  <tr>
+                    <td>Representation</td>
+                    <td>The WHAT of learning</td>
+                    <td>Multiple means of representation: present information in different ways</td>
+                    <td>Text + audio + video + diagrams, captions, glossaries</td>
+                  </tr>
+                  <tr>
+                    <td>Action and Expression</td>
+                    <td>The HOW of learning</td>
+                    <td>Multiple means of action and expression: let learners show what they know in different ways</td>
+                    <td>Write, record, build, present; flexible tools</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li>The CAST guidelines (version 2.2, 2018) organise each principle into guidelines and checkpoints, such as options for perception, language, comprehension, physical action, expression, executive function, recruiting interest and self-regulation.</li>
+              <li>Accessibility (legal and technical) focuses on removing barriers; UDL is broader and focuses on flexibility and learner variability.</li>
+            </ul>
+
+            <h3 class="section-title">Practical accessibility checklist</h3>
+            <ul>
+              <li>Provide alt text for images.</li>
+              <li>Provide captions and transcripts for videos and audio.</li>
+              <li>Use sufficient colour contrast and do not use colour alone to give meaning.</li>
+              <li>Use proper headings and clear, readable fonts.</li>
+              <li>Make materials usable with keyboard and screen readers.</li>
+              <li>Provide content in multiple formats and keep language simple.</li>
+            </ul>
+
+            <div class="alert-box">
+              <strong>What I Must Remember for the Exam</strong><br><br>
+              • CTML assumptions: dual channels, limited capacity, active processing.<br>
+              • Three processing demands: extraneous (reduce), essential (manage), generative (foster).<br>
+              • Reduce: coherence, signalling, redundancy, spatial and temporal contiguity. Manage: segmenting, pre-training, modality. Foster: multimedia, personalisation, voice, embodiment.<br>
+              • Cognitive load: intrinsic, extraneous, germane.<br>
+              • UDL (CAST): Engagement (why), Representation (what), Action and Expression (how).<br>
+              • Accessibility basics: alt text, captions, transcripts, colour contrast, headings, keyboard access.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t9-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A narrated animation also shows the full narration as on-screen text. Learners complain of overload. Which principle is being violated?</p>
+              <button class="option-btn" onclick="checkScenario('t9q1', 'A')">A. Segmenting</button>
+              <button class="option-btn" onclick="checkScenario('t9q1', 'B')">B. Redundancy</button>
+              <button class="option-btn" onclick="checkScenario('t9q1', 'C')">C. Signalling</button>
+              <button class="option-btn" onclick="checkScenario('t9q1', 'D')">D. Personalisation</button>
+              <div id="feedback-t9q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>A diagram has its labels in a legend at the bottom of the page, so learners keep searching back and forth. Which principle should the designer apply?</p>
+              <button class="option-btn" onclick="checkScenario('t9q2', 'A')">A. Spatial contiguity: place labels next to the parts they describe</button>
+              <button class="option-btn" onclick="checkScenario('t9q2', 'B')">B. Voice</button>
+              <button class="option-btn" onclick="checkScenario('t9q2', 'C')">C. Coherence</button>
+              <button class="option-btn" onclick="checkScenario('t9q2', 'D')">D. Modality</button>
+              <div id="feedback-t9q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>A designer adds background music and decorative clip art to make a slide lively, but learners recall less. Which principle explains this?</p>
+              <button class="option-btn" onclick="checkScenario('t9q3', 'A')">A. Embodiment</button>
+              <button class="option-btn" onclick="checkScenario('t9q3', 'B')">B. Pre-training</button>
+              <button class="option-btn" onclick="checkScenario('t9q3', 'C')">C. Coherence: remove interesting but irrelevant material</button>
+              <button class="option-btn" onclick="checkScenario('t9q3', 'D')">D. Segmenting</button>
+              <div id="feedback-t9q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>A 45-minute continuous video leaves novices overwhelmed. Which change best manages essential processing?</p>
+              <button class="option-btn" onclick="checkScenario('t9q4', 'A')">A. Increase the speed of narration</button>
+              <button class="option-btn" onclick="checkScenario('t9q4', 'B')">B. Add decorative images</button>
+              <button class="option-btn" onclick="checkScenario('t9q4', 'C')">C. Add more animation</button>
+              <button class="option-btn" onclick="checkScenario('t9q4', 'D')">D. Break the video into short learner-paced segments with pauses for practice</button>
+              <div id="feedback-t9q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>Novice learners struggle with an animation on network components because they do not know the component names. Which principle suggests a fix?</p>
+              <button class="option-btn" onclick="checkScenario('t9q5', 'A')">A. Voice</button>
+              <button class="option-btn" onclick="checkScenario('t9q5', 'B')">B. Redundancy</button>
+              <button class="option-btn" onclick="checkScenario('t9q5', 'C')">C. Coherence</button>
+              <button class="option-btn" onclick="checkScenario('t9q5', 'D')">D. Pre-training: teach the key terms and components before the animation</button>
+              <div id="feedback-t9q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>A script reads: "The system shall be utilised by the learner for interaction." Which revision best applies the personalisation principle?</p>
+              <button class="option-btn" onclick="checkScenario('t9q6', 'A')">A. The learner uses the system for interaction</button>
+              <button class="option-btn" onclick="checkScenario('t9q6', 'B')">B. Interaction is the system's use</button>
+              <button class="option-btn" onclick="checkScenario('t9q6', 'C')">C. You will now practise sending a message using the system</button>
+              <button class="option-btn" onclick="checkScenario('t9q6', 'D')">D. Utilisation of the system is by the learner</button>
+              <div id="feedback-t9q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A topic is inherently complex for beginners. A designer wants to lower mental effort without reducing the content. Which approach is most defensible?</p>
+              <button class="option-btn" onclick="checkScenario('t9q7', 'A')">A. Present everything at once to save time</button>
+              <button class="option-btn" onclick="checkScenario('t9q7', 'B')">B. Sequence from simple to complex, chunk the material and give worked examples before practice</button>
+              <button class="option-btn" onclick="checkScenario('t9q7', 'C')">C. Delete difficult content</button>
+              <button class="option-btn" onclick="checkScenario('t9q7', 'D')">D. Add decorative graphics</button>
+              <div id="feedback-t9q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>In an assignment learners may submit a written report, a recorded video or a poster to show the same learning. Which UDL principle is mainly applied?</p>
+              <button class="option-btn" onclick="checkScenario('t9q8', 'A')">A. Engagement</button>
+              <button class="option-btn" onclick="checkScenario('t9q8', 'B')">B. Representation</button>
+              <button class="option-btn" onclick="checkScenario('t9q8', 'C')">C. Action and Expression: multiple means of expressing what they know</button>
+              <button class="option-btn" onclick="checkScenario('t9q8', 'D')">D. Cognitive load</button>
+              <div id="feedback-t9q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>A designer provides captions, transcripts and a glossary for a video lesson. Which UDL principle is most directly addressed?</p>
+              <button class="option-btn" onclick="checkScenario('t9q9', 'A')">A. Cognitive presence</button>
+              <button class="option-btn" onclick="checkScenario('t9q9', 'B')">B. Multiple means of action and expression</button>
+              <button class="option-btn" onclick="checkScenario('t9q9', 'C')">C. Multiple means of representation</button>
+              <button class="option-btn" onclick="checkScenario('t9q9', 'D')">D. Multiple means of engagement</button>
+              <div id="feedback-t9q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>A college waits until a blind student enrols and then converts materials individually. Which statement best contrasts this with UDL?</p>
+              <button class="option-btn" onclick="checkScenario('t9q10', 'A')">A. UDL concerns only technology</button>
+              <button class="option-btn" onclick="checkScenario('t9q10', 'B')">B. This is UDL in practice</button>
+              <button class="option-btn" onclick="checkScenario('t9q10', 'C')">C. UDL applies only after complaints</button>
+              <button class="option-btn" onclick="checkScenario('t9q10', 'D')">D. UDL anticipates learner variability and builds flexibility into design from the start, rather than retrofitting for individuals</button>
+              <div id="feedback-t9q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>A chart uses red and green only to show pass or fail. Which improvement best supports accessibility?</p>
+              <button class="option-btn" onclick="checkScenario('t9q11', 'A')">A. Make the chart smaller</button>
+              <button class="option-btn" onclick="checkScenario('t9q11', 'B')">B. Use brighter colours</button>
+              <button class="option-btn" onclick="checkScenario('t9q11', 'C')">C. Remove the chart</button>
+              <button class="option-btn" onclick="checkScenario('t9q11', 'D')">D. Add text labels or patterns so meaning does not depend on colour alone</button>
+              <div id="feedback-t9q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>Which design best reflects the modality principle?</p>
+              <button class="option-btn" onclick="checkScenario('t9q12', 'A')">A. A graphic with decorative music only</button>
+              <button class="option-btn" onclick="checkScenario('t9q12', 'B')">B. A graphic with dense paragraphs of on-screen text and no audio</button>
+              <button class="option-btn" onclick="checkScenario('t9q12', 'C')">C. A graphic with two competing texts</button>
+              <button class="option-btn" onclick="checkScenario('t9q12', 'D')">D. A graphic explained by narration instead of long on-screen text</button>
+              <div id="feedback-t9q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>A client asks for "more interactive animations" in a course whose real problems are unclear objectives and poor sequencing. What is the best analysis?</p>
+              <button class="option-btn" onclick="checkScenario('t9q13', 'A')">A. Remove all objectives</button>
+              <button class="option-btn" onclick="checkScenario('t9q13', 'B')">B. Replace text with music</button>
+              <button class="option-btn" onclick="checkScenario('t9q13', 'C')">C. Add as many animations as possible</button>
+              <button class="option-btn" onclick="checkScenario('t9q13', 'D')">D. Adding multimedia cannot fix design problems; clarify objectives and sequence first and add media only where it supports learning</button>
+              <div id="feedback-t9q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>A programme serves rural learners with low bandwidth, some with hearing impairment and varied English proficiency. Which package best applies UDL and multimedia principles?</p>
+              <button class="option-btn" onclick="checkScenario('t9q14', 'A')">A. Low-bandwidth audio plus transcripts, short captioned clips, simple plain-language text and visual supports</button>
+              <button class="option-btn" onclick="checkScenario('t9q14', 'B')">B. Live video only</button>
+              <button class="option-btn" onclick="checkScenario('t9q14', 'C')">C. Text only in small print</button>
+              <button class="option-btn" onclick="checkScenario('t9q14', 'D')">D. High-definition videos without captions</button>
+              <div id="feedback-t9q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>Two slides explain the same concept: Slide A has 120 words and a decorative photo; Slide B has a labelled diagram, three key phrases and narration. Which evaluation is most accurate?</p>
+              <button class="option-btn" onclick="checkScenario('t9q15', 'A')">A. Slide A, because photos improve every lesson</button>
+              <button class="option-btn" onclick="checkScenario('t9q15', 'B')">B. Slide B, because it reduces extraneous load and uses words and pictures with signalling and modality</button>
+              <button class="option-btn" onclick="checkScenario('t9q15', 'C')">C. Slide A, because more words mean more learning</button>
+              <button class="option-btn" onclick="checkScenario('t9q15', 'D')">D. Both are identical</button>
+              <div id="feedback-t9q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOPIC 10: DEVELOPING MATERIALS             -->
+    <!-- ========================================== -->
+    <div id="module-topic10" class="module-wrapper">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t10-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t10-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t10-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 10: Developing Instructional Materials</h2>
+            <p><strong>Week 10 | Storyboarding, rapid e-learning, authoring tools, accessible documents and videos</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>Development is where the plan becomes a real product. In ADDIE this is the Development phase. Here the designer turns objectives, strategies and the design document into actual learning materials: slides, handouts, videos, e-learning modules, quizzes and LMS pages.</p>
+            <p>Good development follows careful planning (storyboards), uses suitable authoring tools, applies accessibility and multimedia principles, and includes testing and revision.</p>
+
+            <h3 class="section-title">1. From Design to Development</h3>
+            <ul>
+              <li><strong>Design document:</strong> describes objectives, content outline, strategies, assessments and media.</li>
+              <li><strong>Storyboard:</strong> a visual plan of each screen or scene.</li>
+              <li><strong>Prototype:</strong> an early, working sample for review.</li>
+              <li><strong>Final product:</strong> the completed materials after testing and revision.</li>
+            </ul>
+
+            <h3 class="section-title">2. Storyboarding</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> A storyboard is a visual and textual blueprint that shows what will appear on each screen or video scene, in order, before production begins.
+            </div>
+            <p>Storyboards help the team (designer, subject expert, graphic artist, developer) agree on the content and save time, because it is easier to change a sketch than a finished module.</p>
+            
+            <p><strong>Typical storyboard contents (per screen)</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Element</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Screen number and title</td><td>Identifies the screen</td></tr>
+                  <tr><td>Visuals / layout</td><td>Sketch or description of images, charts, animation</td></tr>
+                  <tr><td>On-screen text</td><td>Exact text learners will read</td></tr>
+                  <tr><td>Audio / narration script</td><td>What will be spoken</td></tr>
+                  <tr><td>Interactions</td><td>Buttons, drag-and-drop, quizzes, branching</td></tr>
+                  <tr><td>Feedback</td><td>Messages after learners respond</td></tr>
+                  <tr><td>Navigation</td><td>Where the learner goes next</td></tr>
+                  <tr><td>Notes / accessibility</td><td>Alt text, captions, developer notes</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li>Types: sketch-based (hand drawings), template-based (PowerPoint or Word tables), tool-based (digital storyboard tools).</li>
+              <li>Flowchart/ site map shows the overall structure and navigation of the module.</li>
+            </ul>
+            <div class="info-box">
+              <strong>Example:</strong> Screen 4: Title "What is a Network?" Visual: diagram of three computers connected to a router. Narration: "A network is a group of connected devices..." Interaction: Learner drags labels to the diagram. Feedback: "Correct! The router connects devices."
+            </div>
+
+            <h3 class="section-title">3. Rapid E-Learning Development</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> Rapid e-learning is a way of producing e-learning quickly using templates, authoring tools and existing content (such as PowerPoint), often with subject experts developing content themselves.
+            </div>
+            <ul>
+              <li><strong>Advantages:</strong> fast, cheaper, easy to update.</li>
+              <li><strong>Risks:</strong> poor instructional quality if designers skip analysis; boring "slide-turning" courses; inconsistent quality.</li>
+              <li>Good practice: keep objectives and interaction clear, even when producing quickly.</li>
+            </ul>
+
+            <h3 class="section-title">4. Authoring Tools</h3>
+            <p>Authoring tools help non-programmers produce interactive e-learning content.</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tool</th>
+                    <th>Type</th>
+                    <th>Typical use</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Articulate Storyline / Rise</td><td>Commercial, desktop and web</td><td>Interactive modules, scenarios, quizzes; Rise for responsive lessons</td></tr>
+                  <tr><td>Adobe Captivate</td><td>Commercial</td><td>Software simulations, responsive e-learning</td></tr>
+                  <tr><td>H5P</td><td>Free, open source (plugin for Moodle, WordPress)</td><td>Interactive videos, quizzes, drag-and-drop, flashcards, timelines</td></tr>
+                  <tr><td>iSpring Suite</td><td>Commercial</td><td>PowerPoint-based e-learning</td></tr>
+                  <tr><td>Canva, Genially</td><td>Web tools</td><td>Visual content, infographics and interactive presentations</td></tr>
+                  <tr><td>Camtasia, OBS Studio</td><td>Screen recording and editing</td><td>Video tutorials (OBS is free)</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Choosing an authoring tool</strong></p>
+            <ul>
+              <li>Learning needs (simple content or complex simulations?).</li>
+              <li>Cost and licence; free options such as H5P suit limited budgets.</li>
+              <li>Compatibility with the LMS: SCORM or xAPI (standards that let content run on and report to an LMS).</li>
+              <li>Learning curve and technical support.</li>
+              <li>Mobile-friendly (responsive) output.</li>
+              <li>Accessibility support.</li>
+            </ul>
+            <div class="alert-box">
+              <strong>Key Point:</strong> SCORM (Sharable Content Object Reference Model) is a standard packaging format that allows e-learning content to be uploaded to any compatible LMS and to report scores and completion.
+            </div>
+
+            <h3 class="section-title">5. Creating Accessible Documents and Videos</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Material</th>
+                    <th>Accessibility actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Word/PDF documents</td><td>Use built-in heading styles; add alt text to images; use real lists and simple tables with header rows; meaningful link text ("Download the guide", not "click here"); sufficient contrast</td></tr>
+                  <tr><td>Slides</td><td>Large readable fonts; limited words per slide; alt text; logical reading order</td></tr>
+                  <tr><td>Videos</td><td>Accurate captions (subtitles); transcript; audio description for important visual-only content; clear audio; avoid flashing content</td></tr>
+                  <tr><td>Audio/podcasts</td><td>Provide transcripts</td></tr>
+                  <tr><td>Interactive modules</td><td>Keyboard navigation; labels; do not use colour alone to give meaning</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">6. Development Process: Quality and Testing</h3>
+            <ul>
+              <li><strong>Style guide:</strong> fonts, colours, tone, naming rules to keep materials consistent.</li>
+              <li><strong>Review by subject-matter expert (SME):</strong> for accuracy.</li>
+              <li>Editing and proofreading for language and clarity.</li>
+              <li><strong>Alpha test:</strong> internal testing by the project team for technical errors.</li>
+              <li><strong>Beta test (pilot):</strong> testing with a sample of real learners; collect feedback.</li>
+              <li>Revise and then finalise.</li>
+            </ul>
+
+            <h3 class="section-title">Copyright reminders during development</h3>
+            <ul>
+              <li>Use open educational resources (OER) and Creative Commons images where possible.</li>
+              <li>Give credit and respect licences.</li>
+              <li>Do not copy materials from the internet without permission.</li>
+            </ul>
+
+            <div class="alert-box">
+              <strong>What I Must Remember for the Exam</strong><br><br>
+              • Storyboard: screen-by-screen plan with visuals, text, narration, interactions, feedback and navigation.<br>
+              • Rapid e-learning: quick production with templates and authoring tools; watch quality.<br>
+              • Tools: Articulate Storyline/Rise, Captivate, H5P (free), iSpring, Canva, Camtasia/OBS.<br>
+              • SCORM/xAPI: standards for LMS compatibility and tracking.<br>
+              • Accessibility: headings, alt text, captions, transcripts, contrast, meaningful links.<br>
+              • Quality process: style guide, SME review, alpha test, beta/pilot test, revision.<br>
+              • Respect copyright; prefer OER and Creative Commons.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t10-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A team of five (designer, SME, graphic artist, developer, IT officer) plans a 12-module e-learning course. Why is a storyboard most valuable at this stage?</p>
+              <button class="option-btn" onclick="checkScenario('t10q1', 'A')">A. It replaces the need for objectives</button>
+              <button class="option-btn" onclick="checkScenario('t10q1', 'B')">B. It ensures the course is automatically accessible</button>
+              <button class="option-btn" onclick="checkScenario('t10q1', 'C')">C. It is a final report for management</button>
+              <button class="option-btn" onclick="checkScenario('t10q1', 'D')">D. It lets everyone agree on content, layout, narration and interactions before expensive production, so changes are made cheaply</button>
+              <div id="feedback-t10q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>A storyboard screen specifies the visual, on-screen text and narration, but nothing about what happens after a learner answers a question or where they go next. Which elements are missing?</p>
+              <button class="option-btn" onclick="checkScenario('t10q2', 'A')">A. Colour palette only</button>
+              <button class="option-btn" onclick="checkScenario('t10q2', 'B')">B. Copyright notice</button>
+              <button class="option-btn" onclick="checkScenario('t10q2', 'C')">C. Title and screen number</button>
+              <button class="option-btn" onclick="checkScenario('t10q2', 'D')">D. Interaction feedback and navigation</button>
+              <div id="feedback-t10q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>A school with a small budget wants interactive quizzes, drag-and-drop and interactive video inside its Moodle site. Which choice is most defensible?</p>
+              <button class="option-btn" onclick="checkScenario('t10q3', 'A')">A. H5P, a free, open-source tool integrated with Moodle</button>
+              <button class="option-btn" onclick="checkScenario('t10q3', 'B')">B. A full video-production studio</button>
+              <button class="option-btn" onclick="checkScenario('t10q3', 'C')">C. A very expensive proprietary simulation suite</button>
+              <button class="option-btn" onclick="checkScenario('t10q3', 'D')">D. Printed worksheets only</button>
+              <div id="feedback-t10q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>Management asks for an e-learning course "in a week" using existing PowerPoint slides. What is the main risk of rapid e-learning in this situation?</p>
+              <button class="option-btn" onclick="checkScenario('t10q4', 'A')">A. Courses will be too interactive</button>
+              <button class="option-btn" onclick="checkScenario('t10q4', 'B')">B. Authoring tools will not work</button>
+              <button class="option-btn" onclick="checkScenario('t10q4', 'C')">C. Slide-turning content with poor instructional design if analysis and interaction design are skipped</button>
+              <button class="option-btn" onclick="checkScenario('t10q4', 'D')">D. Learners will learn too much</button>
+              <div id="feedback-t10q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>A designer must choose an authoring tool for a university LMS that tracks completion and scores. Which feature should be checked first?</p>
+              <button class="option-btn" onclick="checkScenario('t10q5', 'A')">A. Whether it has a dark mode</button>
+              <button class="option-btn" onclick="checkScenario('t10q5', 'B')">B. Compatibility with the LMS through standards such as SCORM or xAPI</button>
+              <button class="option-btn" onclick="checkScenario('t10q5', 'C')">C. Whether it produces long videos</button>
+              <button class="option-btn" onclick="checkScenario('t10q5', 'D')">D. The brand colour of the tool</button>
+              <div id="feedback-t10q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>A video tutorial is recorded with no captions, and the screen text is too small. Which revision best improves accessibility and usability?</p>
+              <button class="option-btn" onclick="checkScenario('t10q6', 'A')">A. Add accurate captions and a transcript, enlarge on-screen text and ensure clear audio</button>
+              <button class="option-btn" onclick="checkScenario('t10q6', 'B')">B. Remove narration</button>
+              <button class="option-btn" onclick="checkScenario('t10q6', 'C')">C. Speed up the narration</button>
+              <button class="option-btn" onclick="checkScenario('t10q6', 'D')">D. Compress the video further</button>
+              <div id="feedback-t10q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A Word study guide uses bold large text instead of heading styles and "click here" links. What is the main accessibility problem and fix?</p>
+              <button class="option-btn" onclick="checkScenario('t10q7', 'A')">A. Headings are not structured for screen readers, and links lack meaning; use built-in styles and descriptive link text</button>
+              <button class="option-btn" onclick="checkScenario('t10q7', 'B')">B. Colours are missing; add more</button>
+              <button class="option-btn" onclick="checkScenario('t10q7', 'C')">C. The page is too long; shorten it</button>
+              <button class="option-btn" onclick="checkScenario('t10q7', 'D')">D. Fonts are too small; increase size only</button>
+              <div id="feedback-t10q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>A pilot with ten real learners finds that many cannot find the "Next" button, and some quiz feedback is unclear. At which stage of development is this and what should follow?</p>
+              <button class="option-btn" onclick="checkScenario('t10q8', 'A')">A. Summative evaluation; archive the course</button>
+              <button class="option-btn" onclick="checkScenario('t10q8', 'B')">B. Beta (pilot) test; revise navigation and feedback, then retest or finalise</button>
+              <button class="option-btn" onclick="checkScenario('t10q8', 'C')">C. Alpha test; release immediately</button>
+              <button class="option-btn" onclick="checkScenario('t10q8', 'D')">D. Needs analysis; restart the project</button>
+              <div id="feedback-t10q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>A designer finds a perfect photo on a website and plans to put it in the course. What is the best action regarding copyright?</p>
+              <button class="option-btn" onclick="checkScenario('t10q9', 'A')">A. Crop out the watermark</button>
+              <button class="option-btn" onclick="checkScenario('t10q9', 'B')">B. Use it because it is online</button>
+              <button class="option-btn" onclick="checkScenario('t10q9', 'C')">C. Remove the credit line</button>
+              <button class="option-btn" onclick="checkScenario('t10q9', 'D')">D. Check the licence; use it only if permitted, or use OER or Creative Commons images with attribution</button>
+              <div id="feedback-t10q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>Different developers in a project use different fonts, colours and button positions, confusing learners. Which development tool would have prevented this?</p>
+              <button class="option-btn" onclick="checkScenario('t10q10', 'A')">A. A bigger server</button>
+              <button class="option-btn" onclick="checkScenario('t10q10', 'B')">B. A style guide defining fonts, colours, tone and naming conventions</button>
+              <button class="option-btn" onclick="checkScenario('t10q10', 'C')">C. More animations</button>
+              <button class="option-btn" onclick="checkScenario('t10q10', 'D')">D. A longer schedule</button>
+              <div id="feedback-t10q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>A subject-matter expert reviews a module and finds factual errors, but the designer has already published it. Which step in the quality process was skipped?</p>
+              <button class="option-btn" onclick="checkScenario('t10q11', 'A')">A. Summative evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t10q11', 'B')">B. Needs analysis</button>
+              <button class="option-btn" onclick="checkScenario('t10q11', 'C')">C. Alpha test</button>
+              <button class="option-btn" onclick="checkScenario('t10q11', 'D')">D. SME review before publication</button>
+              <div id="feedback-t10q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>A team can produce either a 20-minute narrated lecture video or five 4-minute segments each with a question. Considering development and learning effectiveness, which is better and why?</p>
+              <button class="option-btn" onclick="checkScenario('t10q12', 'A')">A. Neither; use only text</button>
+              <button class="option-btn" onclick="checkScenario('t10q12', 'B')">B. The five segments, because segmenting with practice supports active learning and easier updates</button>
+              <button class="option-btn" onclick="checkScenario('t10q12', 'C')">C. The long video, because it is quicker to produce</button>
+              <button class="option-btn" onclick="checkScenario('t10q12', 'D')">D. The long video, because learners prefer long content</button>
+              <div id="feedback-t10q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>A designer chooses Rise or similar tools for responsive lessons and Camtasia for tutorials. Which principle best explains choosing different tools for different outputs?</p>
+              <button class="option-btn" onclick="checkScenario('t10q13', 'A')">A. Free tools are always inferior</button>
+              <button class="option-btn" onclick="checkScenario('t10q13', 'B')">B. All tools are the same</button>
+              <button class="option-btn" onclick="checkScenario('t10q13', 'C')">C. Tool choice should follow the nature of the content and the learning need, not the tool's popularity</button>
+              <button class="option-btn" onclick="checkScenario('t10q13', 'D')">D. One tool should do everything</button>
+              <div id="feedback-t10q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>Which storyboard note would best help a developer implement accessibility?</p>
+              <button class="option-btn" onclick="checkScenario('t10q14', 'A')">A. Make it look nice</button>
+              <button class="option-btn" onclick="checkScenario('t10q14', 'B')">B. Use bright colours</button>
+              <button class="option-btn" onclick="checkScenario('t10q14', 'C')">C. Add music</button>
+              <button class="option-btn" onclick="checkScenario('t10q14', 'D')">D. Alt text for the image, captions for the video, keyboard-accessible drag-and-drop with an alternative</button>
+              <div id="feedback-t10q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>Under a tight deadline, a manager suggests skipping the pilot. Which argument best supports keeping a short pilot?</p>
+              <button class="option-btn" onclick="checkScenario('t10q15', 'A')">A. Pilots delay release without benefit</button>
+              <button class="option-btn" onclick="checkScenario('t10q15', 'B')">B. Learners enjoy being tested</button>
+              <button class="option-btn" onclick="checkScenario('t10q15', 'C')">C. Pilots replace evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t10q15', 'D')">D. A small pilot exposes usability and instructional problems cheaply before full release, reducing costly rework</button>
+              <div id="feedback-t10q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOPIC 11: ONLINE COURSE DESIGN             -->
+    <!-- ========================================== -->
+    <div id="module-topic11" class="module-wrapper">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t11-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t11-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t11-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 11: Online Course Design</h2>
+            <p><strong>Week 11 | Designing for the LMS, structuring modules, engaging online activities, Community of Inquiry</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>An online course is not simply a face-to-face course uploaded to the internet. Online learners cannot see the teacher's face, cannot ask questions the instant they arise, and often study alone. A well-designed online course therefore provides clear structure, clear communication, interaction and support.</p>
+            <p>This topic covers the Learning Management System (LMS), how to organise an online course, how to create engaging activities, and the Community of Inquiry (Col) framework, which explains what makes online learning successful.</p>
+
+            <h3 class="section-title">1. Learning Management Systems (LMS)</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> A Learning Management System (LMS) is a software platform for delivering, managing and tracking online learning. It combines content, communication, assessment and records in one place.
+            </div>
+            
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>LMS</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Moodle</td><td>Free, open-source; widely used by universities (including UCC's e-learning platform); highly customisable</td></tr>
+                  <tr><td>Canvas</td><td>Modern, user-friendly; used by many universities; free and paid versions</td></tr>
+                  <tr><td>Google Classroom</td><td>Simple and free with Google accounts; good for schools; fewer advanced features</td></tr>
+                  <tr><td>Blackboard, Microsoft Teams for Education, Open edX</td><td>Other platforms for institutions and MOOCs</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Common LMS features</strong></p>
+            <ul>
+              <li>Course pages and content (files, pages, videos, links).</li>
+              <li>Communication: announcements, forums, messaging.</li>
+              <li>Assessment: quizzes, assignments, gradebook, rubrics.</li>
+              <li>Tracking: completion and activity reports.</li>
+              <li>User management and enrolment.</li>
+              <li>Integration with other tools (video conferencing, plagiarism checkers).</li>
+            </ul>
+
+            <h3 class="section-title">2. Structuring an Online Course</h3>
+            <p><strong>Principles of good structure</strong></p>
+            <ul>
+              <li><strong>Consistency:</strong> the same layout for every module so learners know where to find things.</li>
+              <li><strong>Chunking:</strong> divide content into small manageable units (weeks or modules).</li>
+              <li><strong>Clarity:</strong> clear navigation and instructions.</li>
+              <li><strong>Alignment:</strong> objectives, activities and assessments match.</li>
+              <li><strong>Workload:</strong> realistic study time estimates.</li>
+            </ul>
+
+            <p><strong>A typical module template</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Section</th>
+                    <th>Content</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Module overview</td><td>Introduction and why it matters</td></tr>
+                  <tr><td>Learning objectives</td><td>What learners will be able to do</td></tr>
+                  <tr><td>Learning materials</td><td>Notes, readings, videos, resources</td></tr>
+                  <tr><td>Learning activities</td><td>Discussions, tasks, exercises, group work</td></tr>
+                  <tr><td>Assessment</td><td>Quiz or assignment with due dates and rubric</td></tr>
+                  <tr><td>Summary and next steps</td><td>Wrap-up and preview of next module</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Start-here (orientation) section</strong></p>
+            <ul>
+              <li>Welcome message and instructor introduction.</li>
+              <li>Course syllabus, schedule and assessment details.</li>
+              <li>Netiquette (rules of online communication).</li>
+              <li>How to get technical help and who to contact.</li>
+              <li>A short "get started" activity (introduce yourself).</li>
+            </ul>
+
+            <h3 class="section-title">3. Engaging Online Activities</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Activity</th>
+                    <th>Purpose</th>
+                    <th>Tip</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Discussion forums</td><td>Reflection, peer learning</td><td>Use thought-provoking questions; set clear expectations for posting and replying</td></tr>
+                  <tr><td>Collaborative projects</td><td>Teamwork and application</td><td>Assign roles; give clear instructions and timelines</td></tr>
+                  <tr><td>Quizzes with feedback</td><td>Practice, self-checks</td><td>Short, frequent, with explanations</td></tr>
+                  <tr><td>Case studies / scenarios</td><td>Application and analysis</td><td>Use realistic local contexts</td></tr>
+                  <tr><td>Peer review</td><td>Critical thinking, feedback</td><td>Provide a rubric</td></tr>
+                  <tr><td>Interactive videos / H5P</td><td>Active viewing</td><td>Embed questions</td></tr>
+                  <tr><td>Live webinars</td><td>Real-time interaction</td><td>Record for those who miss them</td></tr>
+                  <tr><td>Reflective journals / e-portfolios</td><td>Metacognition</td><td>Provide prompts</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Synchronous vs. Asynchronous learning</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Synchronous</th>
+                    <th>Asynchronous</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Time</td><td>Same time (live)</td><td>Different times</td></tr>
+                  <tr><td>Examples</td><td>Zoom/Meet class, live chat</td><td>Forums, recorded lectures, email</td></tr>
+                  <tr><td>Strength</td><td>Immediate interaction</td><td>Flexibility; time to think</td></tr>
+                  <tr><td>Weakness</td><td>Time zone and bandwidth problems</td><td>Slower interaction; may feel isolating</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert-box">
+              <strong>Key Point:</strong> In low-bandwidth settings such as many parts of Ghana, mix asynchronous and low-data options (PDF notes, audio, WhatsApp) with short live sessions.
+            </div>
+
+            <h3 class="section-title">4. The Community of Inquiry (Col) Framework</h3>
+            <p>Garrison, Anderson and Archer (2000) explained that meaningful online learning occurs when three kinds of presence overlap:</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Presence</th>
+                    <th>Meaning</th>
+                    <th>How to create it</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Cognitive presence</td><td>Learners construct meaning through reflection and discourse; move from a trigger event to exploration, integration and resolution</td><td>Challenging questions, case problems, reflection tasks</td></tr>
+                  <tr><td>Social presence</td><td>Learners project themselves as real people and feel part of a group</td><td>Introductions, ice-breakers, friendly tone, group work, emoticons</td></tr>
+                  <tr><td>Teaching presence</td><td>Design, facilitation and direction of the learning process by the teacher</td><td>Clear course design, active facilitation, timely feedback, announcements</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li>The three presences overlap to form the educational experience.</li>
+              <li><strong>Cognitive presence phases (Practical Inquiry model):</strong> triggering event -> exploration -> integration -> resolution.</li>
+              <li><strong>Teaching presence has three parts:</strong> design and organisation, facilitation of discourse, direct instruction.</li>
+            </ul>
+            <div class="info-box">
+              <strong>Example:</strong> In a Moodle forum, the instructor posts a real case (triggering event). Students exchange ideas (exploration), connect them with theory (integration), and propose a solution (resolution). The instructor guides (teaching presence) and the friendly tone builds community (social presence).
+            </div>
+
+            <h3 class="section-title">5. Best Practices Checklist</h3>
+            <ul>
+              <li>Provide clear expectations, deadlines and grading criteria.</li>
+              <li>Respond quickly to questions and provide regular feedback.</li>
+              <li>Keep the interface simple and consistent; make it mobile-friendly.</li>
+              <li>Use accessible materials.</li>
+              <li>Build community early.</li>
+              <li>Test the course before launch (check links, quizzes, dates).</li>
+              <li>Use learner data and feedback to improve.</li>
+            </ul>
+
+            <div class="alert-box">
+              <strong>What I Must Remember for the Exam</strong><br><br>
+              • LMS = platform for delivering, managing and tracking online learning (Moodle, Canvas, Google Classroom).<br>
+              • Good structure: consistent, chunked, clear, aligned, realistic workload; include an orientation/start-here section.<br>
+              • Engaging activities: forums, projects, quizzes, case studies, peer review, interactive video.<br>
+              • Synchronous = same time; asynchronous = different times; mix according to bandwidth and needs.<br>
+              • Col (Garrison, Anderson, Archer, 2000): cognitive, social and teaching presence.<br>
+              • Practical inquiry phases: triggering event, exploration, integration, resolution.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t11-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A lecturer simply uploads weekly PDF notes and a final exam to Moodle and calls it an online course. Which critique is most consistent with good online design?</p>
+              <button class="option-btn" onclick="checkScenario('t11q1', 'A')">A. It is excellent because it is simple</button>
+              <button class="option-btn" onclick="checkScenario('t11q1', 'B')">B. It needs more notes only</button>
+              <button class="option-btn" onclick="checkScenario('t11q1', 'C')">C. It lacks structure, interaction, support and aligned activities; online learners need clear organisation, communication and engagement</button>
+              <button class="option-btn" onclick="checkScenario('t11q1', 'D')">D. It should be replaced by live lectures only</button>
+              <div id="feedback-t11q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>Learners in an online course complain that they cannot find anything because every module is arranged differently. Which design principle was neglected?</p>
+              <button class="option-btn" onclick="checkScenario('t11q2', 'A')">A. Plagiarism control</button>
+              <button class="option-btn" onclick="checkScenario('t11q2', 'B')">B. Gamification</button>
+              <button class="option-btn" onclick="checkScenario('t11q2', 'C')">C. Consistency in structure and layout across modules</button>
+              <button class="option-btn" onclick="checkScenario('t11q2', 'D')">D. Synchronous delivery</button>
+              <div id="feedback-t11q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>Which "start here" section would best reduce early dropout in an online course?</p>
+              <button class="option-btn" onclick="checkScenario('t11q3', 'A')">A. A copyright notice only</button>
+              <button class="option-btn" onclick="checkScenario('t11q3', 'B')">B. A welcome message, schedule, assessment overview, netiquette, help contacts and a short get-started activity</button>
+              <button class="option-btn" onclick="checkScenario('t11q3', 'C')">C. The final exam paper</button>
+              <button class="option-btn" onclick="checkScenario('t11q3', 'D')">D. A list of readings</button>
+              <div id="feedback-t11q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>A designer wants a discussion forum to produce real thinking instead of "I agree" replies. Which design is most effective?</p>
+              <button class="option-btn" onclick="checkScenario('t11q4', 'A')">A. A thought-provoking, case-based prompt with clear posting and reply expectations and a rubric</button>
+              <button class="option-btn" onclick="checkScenario('t11q4', 'B')">B. No prompt; let learners post anything</button>
+              <button class="option-btn" onclick="checkScenario('t11q4', 'C')">C. Award marks for the number of posts only</button>
+              <button class="option-btn" onclick="checkScenario('t11q4', 'D')">D. A prompt asking learners to define a term</button>
+              <div id="feedback-t11q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>A programme serves learners with unreliable internet. Which blend is most appropriate?</p>
+              <button class="option-btn" onclick="checkScenario('t11q5', 'A')">A. All content as large videos</button>
+              <button class="option-btn" onclick="checkScenario('t11q5', 'B')">B. Daily live video sessions only</button>
+              <button class="option-btn" onclick="checkScenario('t11q5', 'C')">C. Remove interaction</button>
+              <button class="option-btn" onclick="checkScenario('t11q5', 'D')">D. Mostly asynchronous, low-data materials with a few short, recorded live sessions and WhatsApp support</button>
+              <div id="feedback-t11q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>An instructor gives an online module with excellent videos but never responds to learner posts. Which Col presence is weakest, and what is the likely effect?</p>
+              <button class="option-btn" onclick="checkScenario('t11q6', 'A')">A. Legal presence; copyright is violated</button>
+              <button class="option-btn" onclick="checkScenario('t11q6', 'B')">B. Cognitive presence; learners cannot think</button>
+              <button class="option-btn" onclick="checkScenario('t11q6', 'C')">C. Technical presence; the LMS fails</button>
+              <button class="option-btn" onclick="checkScenario('t11q6', 'D')">D. Teaching presence (facilitation); learners feel unsupported and discussion quality drops</button>
+              <div id="feedback-t11q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A course design includes ice-breakers, group projects and a friendly tone, but few challenging problems. Which presence is strong and which needs strengthening?</p>
+              <button class="option-btn" onclick="checkScenario('t11q7', 'A')">A. All presences are adequate</button>
+              <button class="option-btn" onclick="checkScenario('t11q7', 'B')">B. Social presence is strong; cognitive presence needs strengthening through trigger questions and reflection</button>
+              <button class="option-btn" onclick="checkScenario('t11q7', 'C')">C. Teaching presence is strong; social needs strengthening</button>
+              <button class="option-btn" onclick="checkScenario('t11q7', 'D')">D. Cognitive presence is strong; social is weak</button>
+              <div id="feedback-t11q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>In the Practical Inquiry model, an instructor posts a real school problem to start a discussion. Which phase is this?</p>
+              <button class="option-btn" onclick="checkScenario('t11q8', 'A')">A. Integration</button>
+              <button class="option-btn" onclick="checkScenario('t11q8', 'B')">B. Triggering event</button>
+              <button class="option-btn" onclick="checkScenario('t11q8', 'C')">C. Resolution</button>
+              <button class="option-btn" onclick="checkScenario('t11q8', 'D')">D. Exploration</button>
+              <div id="feedback-t11q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>Which activity sequence best reflects the progression of cognitive presence in a forum task?</p>
+              <button class="option-btn" onclick="checkScenario('t11q9', 'A')">A. Proposed solution, then a case problem, then no discussion</button>
+              <button class="option-btn" onclick="checkScenario('t11q9', 'B')">B. Lecture, copy notes, submit</button>
+              <button class="option-btn" onclick="checkScenario('t11q9', 'C')">C. A case problem, learners share ideas, link ideas with theory, then propose and justify a solution</button>
+              <button class="option-btn" onclick="checkScenario('t11q9', 'D')">D. Reading, quiz, end</button>
+              <div id="feedback-t11q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>A module is planned for 12 hours per week, but the programme is part-time for working teachers. What is the main design flaw?</p>
+              <button class="option-btn" onclick="checkScenario('t11q10', 'A')">A. Too many discussion topics</button>
+              <button class="option-btn" onclick="checkScenario('t11q10', 'B')">B. Too few quizzes</button>
+              <button class="option-btn" onclick="checkScenario('t11q10', 'C')">C. Too little text</button>
+              <button class="option-btn" onclick="checkScenario('t11q10', 'D')">D. Unrealistic workload; study time estimates should be matched to learners' available time</button>
+              <div id="feedback-t11q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>An LMS course contains many links that fail and quizzes with wrong due dates. Which step before launch would most likely have caught these?</p>
+              <button class="option-btn" onclick="checkScenario('t11q11', 'A')">A. Needs analysis</button>
+              <button class="option-btn" onclick="checkScenario('t11q11', 'B')">B. A pre-launch test of the course, checking links, quizzes, dates and navigation</button>
+              <button class="option-btn" onclick="checkScenario('t11q11', 'C')">C. Summative evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t11q11', 'D')">D. Course branding</button>
+              <div id="feedback-t11q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>A designer is choosing between synchronous and asynchronous discussion for a case analysis requiring reflection across time zones. Which is more suitable and why?</p>
+              <button class="option-btn" onclick="checkScenario('t11q12', 'A')">A. Asynchronous, because it is cheaper only</button>
+              <button class="option-btn" onclick="checkScenario('t11q12', 'B')">B. Synchronous, because it is faster</button>
+              <button class="option-btn" onclick="checkScenario('t11q12', 'C')">C. Synchronous, because it needs no planning</button>
+              <button class="option-btn" onclick="checkScenario('t11q12', 'D')">D. Asynchronous, because learners have time to think and contribute at different times</button>
+              <div id="feedback-t11q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>The completion rate is low in Weeks 3-4. LMS analytics show learners logging in but not finishing activities. Which response is most evidence-based?</p>
+              <button class="option-btn" onclick="checkScenario('t11q13', 'A')">A. Delete the analytics</button>
+              <button class="option-btn" onclick="checkScenario('t11q13', 'B')">B. Contact learners, review workload and instructions in those weeks, and revise the design accordingly</button>
+              <button class="option-btn" onclick="checkScenario('t11q13', 'C')">C. Blame learners</button>
+              <button class="option-btn" onclick="checkScenario('t11q13', 'D')">D. Cancel the course</button>
+              <div id="feedback-t11q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>An institution wants to compare Moodle, Canvas and Google Classroom for a mixed secondary and tertiary programme with limited funds and technical staff. Which decision process is most defensible?</p>
+              <button class="option-btn" onclick="checkScenario('t11q14', 'A')">A. Pick the one with the longest feature list</button>
+              <button class="option-btn" onclick="checkScenario('t11q14', 'B')">B. Pick whichever is newest</button>
+              <button class="option-btn" onclick="checkScenario('t11q14', 'C')">C. Match features, cost, support capacity, integration and user skills to institutional needs, and pilot before deciding</button>
+              <button class="option-btn" onclick="checkScenario('t11q14', 'D')">D. Pick whichever one a vendor recommends</button>
+              <div id="feedback-t11q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>Learners suspect cheating in an online quiz. Which strategy best preserves integrity while promoting learning?</p>
+              <button class="option-btn" onclick="checkScenario('t11q15', 'A')">A. Use question banks, randomisation, time limits and authentic tasks, with mostly low-stakes practice quizzes</button>
+              <button class="option-btn" onclick="checkScenario('t11q15', 'B')">B. Use the same questions every term</button>
+              <button class="option-btn" onclick="checkScenario('t11q15', 'C')">C. Make all quizzes high-stakes</button>
+              <button class="option-btn" onclick="checkScenario('t11q15', 'D')">D. Ban quizzes</button>
+              <div id="feedback-t11q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOPIC 12: IMPLEMENTATION & MANAGEMENT      -->
+    <!-- ========================================== -->
+    <div id="module-topic12" class="module-wrapper">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t12-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t12-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t12-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 12: Implementation and Management</h2>
+            <p><strong>Week 12 | Managing implementation, teacher training, technical and logistical issues, copyright and fair use</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>A good design can fail if it is not implemented well. Implementation is the phase in which the instruction is actually delivered to learners. It involves preparing people (instructors and learners), technology, resources and the environment, and managing everything while the course runs.</p>
+            <p>Think of opening a new hospital ward: the building and equipment are ready (development), but patients cannot be treated well unless staff are trained, supplies are in place and procedures are managed. The same is true of instruction.</p>
+
+            <h3 class="section-title">1. What Implementation Involves</h3>
+            <ul>
+              <li>Preparing and training instructors and facilitators.</li>
+              <li>Preparing learners (orientation and support).</li>
+              <li>Setting up technology and the learning environment.</li>
+              <li>Delivering the instruction.</li>
+              <li>Monitoring progress and solving problems.</li>
+              <li>Collecting data for evaluation.</li>
+            </ul>
+
+            <h3 class="section-title">2. Preparing Instructors (Teacher/Faculty Training)</h3>
+            <p>Even the best materials fail if those who deliver them do not understand or accept them.</p>
+            <ul>
+              <li>Offer orientation on objectives, content, methods and the LMS.</li>
+              <li>Provide hands-on practice with tools.</li>
+              <li>Give guides, job aids and tutorials.</li>
+              <li>Provide ongoing support (helpdesk, mentors, communities of practice).</li>
+              <li>Address resistance to change by showing benefits and involving teachers early.</li>
+              <li>Use models such as <strong>TPACK</strong> (Technological Pedagogical Content Knowledge): effective teaching needs a combination of technology, pedagogy and content knowledge.</li>
+            </ul>
+            <div class="info-box">
+              <strong>Example:</strong> Before launching a new Moodle course, a university trains tutors for two days, gives each a one-page quick guide, and sets up a WhatsApp helpline for the first month.
+            </div>
+
+            <h3 class="section-title">3. Preparing and Supporting Learners</h3>
+            <ul>
+              <li>Orientation: how to log in, navigate, submit assignments and communicate.</li>
+              <li>Clear expectations about time, participation and assessment.</li>
+              <li>Support services: technical help, academic advising, counselling.</li>
+              <li>Encourage self-discipline and time management for distance learners.</li>
+            </ul>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Area</th>
+                    <th>Issues to manage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Infrastructure</td><td>Reliable internet, electricity and backup power; computer labs; server capacity</td></tr>
+                  <tr><td>Devices and software</td><td>Compatibility, licences, updates; mobile access; offline options</td></tr>
+                  <tr><td>Data and security</td><td>User accounts, passwords, privacy, protection of learner data, backups</td></tr>
+                  <tr><td>Technical support</td><td>Helpdesk, troubleshooting guides, response time</td></tr>
+                  <tr><td>Scheduling and logistics</td><td>Timetables, venues, registration, distribution of materials, deadlines</td></tr>
+                  <tr><td>Budget and resources</td><td>Costs of data, hardware, training, maintenance</td></tr>
+                  <tr><td>Contingency plans</td><td>What to do if the system fails (alternative materials, extended deadlines)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li>Early warning: monitor participation and contact learners who fall behind.</li>
+            </ul>
+
+            <h3 class="section-title">4. Technical and Logistical Considerations</h3>
+            <p><strong>Project management basics</strong></p>
+            <ul>
+              <li>Define roles and responsibilities.</li>
+              <li>Use a timeline (Gantt chart) and milestones.</li>
+              <li>Communicate regularly with stakeholders.</li>
+              <li>Manage risks (identify, rank, plan responses).</li>
+              <li>Document processes and decisions.</li>
+              <li>Pilot before full launch (a "soft launch").</li>
+            </ul>
+            <div class="alert-box">
+              <strong>Key Point:</strong> Always run a pilot with a small group first. It exposes problems cheaply before full implementation.
+            </div>
+
+            <h3 class="section-title">5. Copyright and Fair Use</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> Copyright is the legal right of creators to control the use and copying of their original works (text, images, music, video, software). Fair use (in some countries, "fair dealing") allows limited use of copyrighted material without permission for purposes such as teaching, criticism, research and scholarship.
+            </div>
+            <ul>
+              <li>In Ghana, copyright is governed by the Copyright Act, 2005 (Act 690), which also provides for limited exceptions for education. Laws differ between countries, so always check local rules and institutional policies.</li>
+              <li>Fair use usually considers: the purpose of use (educational and non-commercial is favoured), the nature of the work, the amount used, and the effect on the market for the original.</li>
+              <li>Using small portions with proper citation for class teaching is more likely acceptable than copying a whole textbook and sharing it.</li>
+            </ul>
+
+            <p><strong>Ways to stay safe</strong></p>
+            <ul>
+              <li>Cite and attribute sources.</li>
+              <li>Use Open Educational Resources (OER).</li>
+              <li>Use Creative Commons (CC) licences correctly: CC BY (attribution), CC BY-SA (share alike), CC BY-NC (non-commercial), CC BY-ND (no derivatives).</li>
+              <li>Use public domain works.</li>
+              <li>Seek permission or licences when in doubt.</li>
+              <li>Avoid plagiarism: presenting someone else's work as your own; use plagiarism checkers and teach academic integrity.</li>
+            </ul>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Term</th>
+                    <th>Meaning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Public domain</td><td>Works whose copyright has expired or never existed; free to use</td></tr>
+                  <tr><td>Creative Commons</td><td>Standard licences that allow sharing under stated conditions</td></tr>
+                  <tr><td>OER</td><td>Teaching and learning materials freely available for use and adaptation</td></tr>
+                  <tr><td>Fair use / fair dealing</td><td>Limited use of copyrighted work without permission for purposes like education</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">6. Privacy and Ethics</h3>
+            <ul>
+              <li>Protect learners' personal data and grades.</li>
+              <li>Obtain consent before recording or sharing learner work.</li>
+              <li>Follow data protection laws (for Ghana, the Data Protection Act, 2012, Act 843).</li>
+              <li>Be fair and inclusive in access to technology.</li>
+            </ul>
+
+            <div class="alert-box">
+              <strong>What I Must Remember for the Exam</strong><br><br>
+              • Implementation = delivery + preparation of instructors, learners, technology and environment.<br>
+              • Train instructors (orientation, hands-on practice, guides, ongoing support); TPACK = technology + pedagogy + content.<br>
+              • Support learners with orientation, helpdesk, early warning.<br>
+              • Manage infrastructure, devices, data security, support, scheduling, budget, contingency; run a pilot first.<br>
+              • Copyright: creators' legal rights; fair use: limited educational use without permission; Ghana: Copyright Act 2005 (Act 690).<br>
+              • Use OER, public domain, Creative Commons (CC BY etc.), cite sources, avoid plagiarism.<br>
+              • Protect privacy; data protection (Ghana Act 843, 2012).
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t12-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A university launches a new LMS course for 300 learners with no instructor training. Tutors struggle and avoid features. What is the most likely underlying cause?</p>
+              <button class="option-btn" onclick="checkScenario('t12q1', 'A')">A. The LMS was free</button>
+              <button class="option-btn" onclick="checkScenario('t12q1', 'B')">B. The course objectives were too long</button>
+              <button class="option-btn" onclick="checkScenario('t12q1', 'C')">C. The learners were too many</button>
+              <button class="option-btn" onclick="checkScenario('t12q1', 'D')">D. Inadequate preparation of instructors, who need hands-on practice and support before delivery</button>
+              <div id="feedback-t12q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>A school plans a full launch of a new platform to all classes next week without testing. Which approach best manages risk?</p>
+              <button class="option-btn" onclick="checkScenario('t12q2', 'A')">A. Run a pilot with a small group, resolve problems, then scale up</button>
+              <button class="option-btn" onclick="checkScenario('t12q2', 'B')">B. Wait until all teachers demand it</button>
+              <button class="option-btn" onclick="checkScenario('t12q2', 'C')">C. Skip training to save time</button>
+              <button class="option-btn" onclick="checkScenario('t12q2', 'D')">D. Proceed because the platform is popular</button>
+              <div id="feedback-t12q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>On launch day, the server crashes and there is no alternative. Which planning step was neglected?</p>
+              <button class="option-btn" onclick="checkScenario('t12q3', 'A')">A. Needs assessment only</button>
+              <button class="option-btn" onclick="checkScenario('t12q3', 'B')">B. Objectives writing</button>
+              <button class="option-btn" onclick="checkScenario('t12q3', 'C')">C. Rubric design</button>
+              <button class="option-btn" onclick="checkScenario('t12q3', 'D')">D. Contingency planning, such as backup materials, offline options and extended deadlines</button>
+              <div id="feedback-t12q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>A teacher resists using the new system, saying it adds workload. Which strategy best addresses resistance to change?</p>
+              <button class="option-btn" onclick="checkScenario('t12q4', 'A')">A. Force compliance with penalties</button>
+              <button class="option-btn" onclick="checkScenario('t12q4', 'B')">B. Ignore the resistance</button>
+              <button class="option-btn" onclick="checkScenario('t12q4', 'C')">C. Involve teachers early, show benefits, give training and support, and gather their feedback</button>
+              <button class="option-btn" onclick="checkScenario('t12q4', 'D')">D. Replace the teacher</button>
+              <div id="feedback-t12q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>In a TPACK perspective, a teacher knows the content and the software but struggles to use the software to teach a concept. Which knowledge area needs development?</p>
+              <button class="option-btn" onclick="checkScenario('t12q5', 'A')">A. Content knowledge only</button>
+              <button class="option-btn" onclick="checkScenario('t12q5', 'B')">B. Pedagogical and technological-pedagogical knowledge for using the tool in teaching</button>
+              <button class="option-btn" onclick="checkScenario('t12q5', 'C')">C. None; the teacher is fully prepared</button>
+              <button class="option-btn" onclick="checkScenario('t12q5', 'D')">D. Technological content knowledge only</button>
+              <div id="feedback-t12q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>A lecturer scans an entire textbook and shares it with 200 students via LMS without permission, justifying it as "for education". What is the best analysis?</p>
+              <button class="option-btn" onclick="checkScenario('t12q6', 'A')">A. Acceptable, since the purpose is educational</button>
+              <button class="option-btn" onclick="checkScenario('t12q6', 'B')">B. Unlikely to fit fair use or fair dealing because the amount is large; she should seek permission, use licensed or OER materials, or share limited extracts with citation</button>
+              <button class="option-btn" onclick="checkScenario('t12q6', 'C')">C. Acceptable because no money is charged</button>
+              <button class="option-btn" onclick="checkScenario('t12q6', 'D')">D. Acceptable because the textbook is old</button>
+              <div id="feedback-t12q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A designer wants to reuse and adapt a diagram and publish the course for sharing. Which licence situation most clearly permits this with credit?</p>
+              <button class="option-btn" onclick="checkScenario('t12q7', 'A')">A. The diagram has a CC BY-ND licence</button>
+              <button class="option-btn" onclick="checkScenario('t12q7', 'B')">B. The diagram carries a Creative Commons licence that permits adaptation with attribution (such as CC BY)</button>
+              <button class="option-btn" onclick="checkScenario('t12q7', 'C')">C. The diagram has no licence and was copied from a blog</button>
+              <button class="option-btn" onclick="checkScenario('t12q7', 'D')">D. The diagram is marked "All rights reserved"</button>
+              <div id="feedback-t12q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>A student copies a classmate's project and submits it as their own. Which response best combines policy and design?</p>
+              <button class="option-btn" onclick="checkScenario('t12q8', 'A')">A. Ban group work</button>
+              <button class="option-btn" onclick="checkScenario('t12q8', 'B')">B. Ignore it</button>
+              <button class="option-btn" onclick="checkScenario('t12q8', 'C')">C. Apply the integrity policy and redesign assessments with authentic, individualised components and teach academic integrity</button>
+              <button class="option-btn" onclick="checkScenario('t12q8', 'D')">D. Delete the course</button>
+              <div id="feedback-t12q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>Learners in a distance programme begin to fall behind, but no one notices until exams. Which implementation practice would have helped?</p>
+              <button class="option-btn" onclick="checkScenario('t12q9', 'A')">A. Monitoring participation and early-warning contact with learners who disengage</button>
+              <button class="option-btn" onclick="checkScenario('t12q9', 'B')">B. Longer exams</button>
+              <button class="option-btn" onclick="checkScenario('t12q9', 'C')">C. Cancelling support services</button>
+              <button class="option-btn" onclick="checkScenario('t12q9', 'D')">D. Fewer assignments</button>
+              <div id="feedback-t12q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>A manager wants to record learners' online discussions and share them publicly as promotional material. Which is the best action?</p>
+              <button class="option-btn" onclick="checkScenario('t12q10', 'A')">A. Share them if the course is successful</button>
+              <button class="option-btn" onclick="checkScenario('t12q10', 'B')">B. Obtain informed consent and follow data-protection policy before sharing learner work or data</button>
+              <button class="option-btn" onclick="checkScenario('t12q10', 'C')">C. Share them after deleting names only</button>
+              <button class="option-btn" onclick="checkScenario('t12q10', 'D')">D. Share them because they are in the course</button>
+              <div id="feedback-t12q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>An institution must choose between a full-scale launch to 5,000 learners and a staged rollout over three semesters. Which factor most supports a staged rollout?</p>
+              <button class="option-btn" onclick="checkScenario('t12q11', 'A')">A. Staged rollouts are cheaper in all cases</button>
+              <button class="option-btn" onclick="checkScenario('t12q11', 'B')">B. Learners prefer waiting</button>
+              <button class="option-btn" onclick="checkScenario('t12q11', 'C')">C. It exposes technical, support and instructional problems at manageable scale and allows learning before expansion</button>
+              <button class="option-btn" onclick="checkScenario('t12q11', 'D')">D. Rollouts need no training</button>
+              <div id="feedback-t12q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>A project manager lists tasks but no owners, deadlines or risks. Which basic project-management elements are missing?</p>
+              <button class="option-btn" onclick="checkScenario('t12q12', 'A')">A. Defined roles, a timeline with milestones, and risk management</button>
+              <button class="option-btn" onclick="checkScenario('t12q12', 'B')">B. More meetings only</button>
+              <button class="option-btn" onclick="checkScenario('t12q12', 'C')">C. A new logo</button>
+              <button class="option-btn" onclick="checkScenario('t12q12', 'D')">D. A list of preferred authoring tools</button>
+              <div id="feedback-t12q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>An LMS stores learners' personal data and grades. Which action best reflects responsible data management?</p>
+              <button class="option-btn" onclick="checkScenario('t12q13', 'A')">A. Keep all data on personal laptops</button>
+              <button class="option-btn" onclick="checkScenario('t12q13', 'B')">B. Control access, protect accounts, back up data and follow data-protection law and policy</button>
+              <button class="option-btn" onclick="checkScenario('t12q13', 'C')">C. Use shared passwords for convenience</button>
+              <button class="option-btn" onclick="checkScenario('t12q13', 'D')">D. Publish grades on an open page</button>
+              <div id="feedback-t12q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>A rural college wants to implement online learning, yet most learners have only basic phones and limited data. Which implementation plan is most realistic?</p>
+              <button class="option-btn" onclick="checkScenario('t12q14', 'A')">A. Require laptops and fibre internet</button>
+              <button class="option-btn" onclick="checkScenario('t12q14', 'B')">B. Postpone indefinitely</button>
+              <button class="option-btn" onclick="checkScenario('t12q14', 'C')">C. Phase in mobile-friendly, low-data content, offline options and lab access, with orientation and support</button>
+              <button class="option-btn" onclick="checkScenario('t12q14', 'D')">D. Use only live video classes</button>
+              <div id="feedback-t12q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>A review finds that after training, teachers use the new system in lessons only when a trainer is present. Which action best supports transfer to practice?</p>
+              <button class="option-btn" onclick="checkScenario('t12q15', 'A')">A. Another one-off lecture</button>
+              <button class="option-btn" onclick="checkScenario('t12q15', 'B')">B. Ongoing support such as mentoring, job aids, communities of practice and supervisor backing</button>
+              <button class="option-btn" onclick="checkScenario('t12q15', 'C')">C. Stop training</button>
+              <button class="option-btn" onclick="checkScenario('t12q15', 'D')">D. Remove the system</button>
+              <div id="feedback-t12q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+  </div> <!-- End App Layout -->
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="max-width: 1100px; margin: 0 auto;">
+      &copy; 2026 Prinesther Educational Consult | Instructional Design Module
+    </div>
+  </footer>
+
+  <script>
+    // Module Switcher for Top-Right Dropdown
+    function switchModule(moduleId) {
+      document.querySelectorAll('.module-wrapper').forEach(el => el.classList.remove('active'));
+      document.getElementById(moduleId).classList.add('active');
+    }
+
+    // Sub-Tab Switcher
+    function switchTab(tabId, btnElement) {
+      const activeModule = btnElement.closest('.module-wrapper');
+      
+      activeModule.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      activeModule.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      btnElement.classList.add('active');
+    }
+
+    // Interactive Knowledge Check Answers (Topics 9, 10, 11, 12)
+    const scenarioAnswers = {
+      // Topic 9
+      't9q1': { correct: 'B', text: "Correct! The redundancy principle says you should not use on-screen text that repeats narration simultaneously." },
+      't9q2': { correct: 'A', text: "Correct! Spatial contiguity means placing related words and pictures near each other to prevent learners from searching." },
+      't9q3': { correct: 'C', text: "Correct! The coherence principle dictates that you should remove interesting but irrelevant material (clutter) to reduce extraneous load." },
+      't9q4': { correct: 'D', text: "Correct! Segmenting breaks the complex lesson into learner-paced parts, giving them time to process the essential information." },
+      't9q5': { correct: 'D', text: "Correct! The pre-training principle states that teaching key terms before the main complex animation helps manage essential processing." },
+      't9q6': { correct: 'C', text: "Correct! Personalisation suggests using conversational, direct language ('You will now...') rather than formal passive text." },
+      't9q7': { correct: 'B', text: "Correct! Sequencing simple to complex and chunking effectively manages the essential load without reducing the content." },
+      't9q8': { correct: 'C', text: "Correct! Letting learners choose how to demonstrate their learning is Multiple Means of Action and Expression." },
+      't9q9': { correct: 'C', text: "Correct! Providing information in different formats (text, visual, audio) is Multiple Means of Representation." },
+      't9q10': { correct: 'D', text: "Correct! UDL anticipates learner variability and builds accessibility into the design from the very start, rather than retrofitting." },
+      't9q11': { correct: 'D', text: "Correct! Accessibility standards state you must never rely on colour alone to convey meaning. Add text labels or patterns." },
+      't9q12': { correct: 'D', text: "Correct! The modality principle asserts that people learn better from graphics explained by audio narration than from graphics explained by on-screen text." },
+      't9q13': { correct: 'D', text: "Correct! Adding multimedia cannot fix underlying design flaws. Clarify objectives and sequence first." },
+      't9q14': { correct: 'A', text: "Correct! This package accommodates low bandwidth, hearing impairments, and language levels, applying UDL perfectly." },
+      't9q15': { correct: 'B', text: "Correct! Slide B removes extraneous text (coherence), signals key ideas, and uses narration (modality) to lower cognitive load." },
+      
+      // Topic 10
+      't10q1': { correct: 'D', text: "Correct! Storyboarding allows stakeholders to agree on content before expensive development begins, saving time and money." },
+      't10q2': { correct: 'D', text: "Correct! Interaction feedback (what happens after a response) and navigation (where they go next) are missing from the storyboard." },
+      't10q3': { correct: 'A', text: "Correct! H5P is a free, open-source tool that integrates perfectly with Moodle for a low-budget project." },
+      't10q4': { correct: 'C', text: "Correct! The main risk of rapid e-learning is creating boring 'slide-turning' courses if analysis and interaction design are skipped." },
+      't10q5': { correct: 'B', text: "Correct! SCORM and xAPI are the critical standards that allow the authoring tool to communicate scores and tracking to the LMS." },
+      't10q6': { correct: 'A', text: "Correct! Adding accurate captions/transcripts and enlarging text directly addresses the accessibility and usability issues." },
+      't10q7': { correct: 'A', text: "Correct! Bold text is not a structural heading for screen readers, and 'click here' lacks descriptive meaning for accessibility." },
+      't10q8': { correct: 'B', text: "Correct! Testing with a sample of real learners is the Beta (pilot) test. You should revise based on this feedback." },
+      't10q9': { correct: 'D', text: "Correct! You must check the licence. Finding a photo online does not make it free to use without permission or a proper CC licence." },
+      't10q10': { correct: 'B', text: "Correct! A style guide establishes the rules for fonts, colours, and layouts, keeping the course visually consistent." },
+      't10q11': { correct: 'D', text: "Correct! The SME must review the course for factual accuracy BEFORE the course is published." },
+      't10q12': { correct: 'B', text: "Correct! Segmenting the video into smaller chunks with practice questions reduces cognitive load and supports active learning." },
+      't10q13': { correct: 'C', text: "Correct! Tool choice should always follow the nature of the content and the specific learning need, not just popularity." },
+      't10q14': { correct: 'D', text: "Correct! Alt text, captions, and keyboard accessibility are specific, actionable instructions for a developer building an accessible course." },
+      't10q15': { correct: 'D', text: "Correct! Even a short pilot exposes major usability and instructional problems cheaply before the expensive full release." },
+
+      // Topic 11
+      't11q1': { correct: 'C', text: "Correct! Uploading PDFs is just file sharing. Good online design requires clear structure, interaction, and aligned activities." },
+      't11q2': { correct: 'C', text: "Correct! Consistency is vital so learners don't waste cognitive effort trying to figure out where things are located in each module." },
+      't11q3': { correct: 'B', text: "Correct! An orientation section with a welcome message, schedule, netiquette, and a low-stakes 'get started' activity builds early engagement." },
+      't11q4': { correct: 'A', text: "Correct! A thought-provoking prompt with clear expectations and a rubric drives actual reflection and peer learning." },
+      't11q5': { correct: 'D', text: "Correct! Mostly asynchronous, low-data materials accommodate unreliable internet, while short live sessions provide social presence." },
+      't11q6': { correct: 'D', text: "Correct! By never responding, Teaching Presence (facilitation) is weak, which causes learners to feel unsupported and drops discussion quality." },
+      't11q7': { correct: 'B', text: "Correct! The ice-breakers and friendly tone build Social presence, but the lack of challenging problems means Cognitive presence is weak." },
+      't11q8': { correct: 'B', text: "Correct! Posting the initial real-world problem starts the Practical Inquiry process, acting as the Triggering event." },
+      't11q9': { correct: 'C', text: "Correct! The sequence is: Triggering event (case problem) -> Exploration (share ideas) -> Integration (link to theory) -> Resolution (propose solution)." },
+      't11q10': { correct: 'D', text: "Correct! 12 hours a week is an unrealistic workload for part-time working teachers. Study time estimates must be matched to learners' reality." },
+      't11q11': { correct: 'B', text: "Correct! A pre-launch test (QA testing) specifically checks for broken links, incorrect dates, and navigation errors before learners see it." },
+      't11q12': { correct: 'D', text: "Correct! Asynchronous discussion allows learners in different time zones the flexibility to think and contribute on their own schedule." },
+      't11q13': { correct: 'B', text: "Correct! The evidence-based response is to contact the learners to investigate, review the workload, and revise the design based on that data." },
+      't11q14': { correct: 'C', text: "Correct! The decision must match institutional needs (cost, support, user skills) and should be piloted before a final decision is made." },
+      't11q15': { correct: 'A', text: "Correct! Using question banks, randomisation, and time limits reduces cheating while still providing valuable low-stakes practice." },
+
+      // Topic 12
+      't12q1': { correct: 'D', text: "Correct! Even the best LMS fails if the instructors are not prepared with hands-on practice and support before delivery." },
+      't12q2': { correct: 'A', text: "Correct! Always run a pilot with a small group first to expose and resolve problems cheaply before a full scale-up." },
+      't12q3': { correct: 'D', text: "Correct! Contingency planning (having backup materials, offline options, or extended deadlines ready) manages the risk of system failures." },
+      't12q4': { correct: 'C', text: "Correct! To address resistance to change, you must involve teachers early, show the benefits, and provide adequate training and support." },
+      't12q5': { correct: 'B', text: "Correct! The teacher knows the content and the technology, but lacks the Pedagogical and Technological-Pedagogical Knowledge (TPACK) to combine them effectively." },
+      't12q6': { correct: 'B', text: "Correct! Copying an entire textbook is unlikely to qualify as fair use because of the large amount and the effect on the original market." },
+      't12q7': { correct: 'B', text: "Correct! A Creative Commons Attribution (CC BY) licence explicitly permits reuse and adaptation as long as credit is given." },
+      't12q8': { correct: 'C', text: "Correct! Apply the integrity policy, but also redesign assessments to be authentic and individualised so they are harder to copy." },
+      't12q9': { correct: 'A', text: "Correct! Monitoring participation and using an early-warning system to contact disengaged learners helps prevent them from falling permanently behind." },
+      't12q10': { correct: 'B', text: "Correct! You must always obtain informed consent and follow data-protection laws before recording or sharing learner data publicly." },
+      't12q11': { correct: 'C', text: "Correct! A staged rollout limits risk by exposing technical and instructional problems at a manageable scale before expanding to everyone." },
+      't12q12': { correct: 'A', text: "Correct! Basic project management requires defining who owns the tasks (roles), when they are due (timeline/milestones), and what could go wrong (risk management)." },
+      't12q13': { correct: 'B', text: "Correct! Responsible data management means controlling access, backing up data, and strictly following data-protection laws (like Ghana's Act 843)." },
+      't12q14': { correct: 'C', text: "Correct! Phasing in mobile-friendly, low-data content with offline options and lab access matches the specific technological constraints of the learners." },
+      't12q15': { correct: 'B', text: "Correct! Transfer to practice requires ongoing support back on the job, such as mentoring, job aids, and supervisor backing." }
+    };
+
+    function checkScenario(qNum, selected) {
+      const box = document.getElementById(`feedback-${qNum}`);
+      const data = scenarioAnswers[qNum];
+      box.style.display = 'block';
+
+      if (selected === data.correct) {
+        box.className = 'feedback-box feedback-correct';
+        box.innerText = data.text;
+      } else {
+        box.className = 'feedback-box feedback-wrong';
+        box.innerText = "✗ Incorrect. Please review the relevant topic notes.";
+      }
+    }
+  </script>
+</body>
+</html>

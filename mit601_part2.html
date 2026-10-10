@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIT 601 - Part 2: Analysis & Models</title>
+  
+  <link rel="icon" href="icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icon-512.png">
+
+  <style>
+    :root {
+      --primary: #003366;
+      --primary-dark: #001f4d;
+      --primary-light: #e6f0ff;
+      --yellow: #f2a900;
+      --yellow-light: #fff8e6;
+      --red: #d90429;
+      --red-light: #ffe5e8;
+      --white: #ffffff;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f5;
+      --gray-200: #e9ecef;
+      --gray-700: #495057;
+      --gray-900: #212529;
+      --success: #2b9348;
+      --border-radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 20px 20px;
+      border-bottom: 6px solid var(--yellow);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-badge {
+      width: 65px;
+      height: 65px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 3px solid var(--yellow);
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .header-text h1 {
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .motto-ribbon {
+      display: inline-block;
+      background-color: var(--yellow);
+      color: var(--primary-dark);
+      font-weight: bold;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .compiler-text {
+      color: var(--white);
+      font-size: 0.9rem;
+      margin-top: 8px;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    .module-dropdown {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 2px solid var(--yellow);
+      background: var(--white);
+      color: var(--primary-dark);
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 100%;
+    }
+
+    /* NAVIGATION TABS */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .nav-btn {
+      padding: 16px 18px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+    }
+
+    /* MAIN CONTENT WRAPPER */
+    .app-layout {
+      flex-grow: 1;
+    }
+
+    .module-wrapper {
+      display: none;
+    }
+
+    .module-wrapper.active {
+      display: block;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px 50px 15px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* CARDS & FORMATTING */
+    .card {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .card-title {
+      color: var(--primary);
+      font-size: 1.3rem;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title {
+      color: var(--primary-dark);
+      font-size: 1.15rem;
+      margin: 24px 0 10px 0;
+      border-left: 4px solid var(--yellow);
+      padding-left: 10px;
+    }
+
+    .alert-box {
+      background: var(--yellow-light);
+      border-left: 5px solid var(--yellow);
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      font-size: 0.95rem;
+    }
+
+    .info-box {
+      background: var(--primary-light);
+      border-left: 5px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      font-size: 0.95rem;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* SCENARIO LAB / INTERACTIVE */
+    .scenario-box {
+      border-left: 4px solid var(--primary);
+      background: var(--gray-50);
+      padding: 16px;
+      margin-bottom: 24px;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      margin: 8px 0;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+
+    .option-btn:hover {
+      background: var(--gray-100);
+      border-color: var(--primary);
+    }
+
+    .feedback-box {
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.95rem;
+      display: none;
+      font-weight: 500;
+    }
+
+    .feedback-correct {
+      background: #e8f5e9;
+      color: #1b5e20;
+      border: 1px solid #a5d6a7;
+    }
+
+    .feedback-wrong {
+      background: var(--red-light);
+      color: #b71c1c;
+      border: 1px solid #ef9a9a;
+    }
+
+    /* TABLES */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      min-width: 600px;
+    }
+
+    th, td {
+      border: 1px solid var(--gray-200);
+      padding: 12px;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    th {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--gray-50);
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: var(--white);
+      border-top: 1px solid var(--gray-200);
+      padding: 24px 20px;
+      text-align: center;
+      color: var(--gray-700);
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="header-left">
+        <div class="logo-badge">UCC</div>
+        <div class="header-text">
+          <h1>University of Cape Coast</h1>
+          <div><span class="motto-ribbon">MIT 601: Instructional Design</span></div>
+          <div class="compiler-text">Compiled by Prince Osei (ED/ITD/25/0026)<br>Prepared by Amponsah Dennis</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <select class="module-dropdown" onchange="switchModule(this.value)">
+          <option value="module-topic3">Topic 3: Needs & Learner Analysis</option>
+          <option value="module-topic4">Topic 4: The ADDIE Model</option>
+          <option value="module-topic5">Topic 5: Kemp, SAM & Rapid Prototyping</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    
+    <!-- ========================================== -->
+    <!-- TOPIC 3: NEEDS & LEARNER ANALYSIS          -->
+    <!-- ========================================== -->
+    <div id="module-topic3" class="module-wrapper active">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t3-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t3-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t3-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 3: Needs Analysis and Learner Analysis</h2>
+            <p><strong>Week 3 | Needs assessment, instructional goals, learner characteristics, context analysis</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>Before building anything, a designer must ask: "Is there really a problem, and is training or instruction the solution?" A doctor does not prescribe medicine before diagnosis. In the same way, an instructional designer does not start creating a course before doing analysis. This is the Analysis phase of ADDIE and the foundation of the design.</p>
+            <p>Three analyses are covered: needs analysis (what is the gap?), learner analysis (who are the learners?) and context analysis (where and how will learning happen?).</p>
+
+            <h3 class="section-title">1. Needs Analysis (Needs Assessment)</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> A need is a gap between the current state ("what is") and the desired state ("what should be"). Needs assessment is the process of identifying and measuring that gap.
+            </div>
+            <div class="info-box">
+              <strong>Example:</strong> Teachers in a school should be able to upload lesson notes to the school LMS (desired state), but only 20% can do it (current state). The 80% gap is the need.
+            </div>
+
+            <p><strong>Not every problem needs instruction:</strong> Gaps may be caused by lack of knowledge/skills (instruction can help) or by other causes such as poor motivation, no tools, unclear policies or poor management (instruction alone will not help). The designer must find the real cause (performance analysis or root-cause analysis) before deciding on a solution.</p>
+
+            <h3 class="section-title">Types of needs (Kaufman / Burton and Merrill)</h3>
+            <ul>
+              <li><strong>Normative need:</strong> compared with a standard (for example, national ICT standard).</li>
+              <li><strong>Felt need:</strong> what people say they want.</li>
+              <li><strong>Expressed need:</strong> needs shown through action (requests, complaints, enrolments).</li>
+              <li><strong>Comparative need:</strong> one group compared with another.</li>
+              <li><strong>Anticipated (future) need:</strong> needs expected because of coming changes such as a new curriculum.</li>
+            </ul>
+
+            <h3 class="section-title">Methods of collecting data</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>Use</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Questionnaires / surveys</td><td>Reach many people quickly</td></tr>
+                  <tr><td>Interviews</td><td>Get deep opinions from key people</td></tr>
+                  <tr><td>Focus groups</td><td>Group discussion of problems and ideas</td></tr>
+                  <tr><td>Observation</td><td>See actual performance</td></tr>
+                  <tr><td>Document and data review</td><td>Results, reports, policies, past records</td></tr>
+                  <tr><td>Tests/pre-assessment</td><td>Measure existing knowledge and skills</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">Steps in a simple needs assessment</h3>
+            <ul>
+              <li><strong>Step 1:</strong> Define the desired performance or standard.</li>
+              <li><strong>Step 2:</strong> Find the current performance.</li>
+              <li><strong>Step 3:</strong> Identify the gap.</li>
+              <li><strong>Step 4:</strong> Find causes of the gap.</li>
+              <li><strong>Step 5:</strong> Rank needs by importance and urgency.</li>
+              <li><strong>Step 6:</strong> Decide whether instruction is the right solution and set priorities.</li>
+            </ul>
+
+            <h3 class="section-title">2. Identifying Instructional Goals</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> An instructional goal is a broad statement of what learners will be able to do after instruction.
+            </div>
+            <ul>
+              <li>It comes from the needs analysis.</li>
+              <li>It is written in terms of what learners will do, not what the teacher will do.</li>
+              <li>It is later broken down into specific, measurable objectives (see Topic 6).</li>
+            </ul>
+            <div class="info-box">
+              <strong>Example:</strong> Goal: "Teachers will be able to use Moodle to deliver a course online." (Not: "To teach teachers about Moodle.")
+            </div>
+
+            <h3 class="section-title">3. Learner Analysis</h3>
+            <p>Learner analysis asks, "Who will be learning?" Instruction that suits one group may fail with another.</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Learner characteristic</th>
+                    <th>Questions to ask</th>
+                    <th>Design effect</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Prior knowledge and skills (entry behaviours)</td>
+                    <td>What do they already know? Do they have prerequisite skills?</td>
+                    <td>Decide starting point; add review or pre-training</td>
+                  </tr>
+                  <tr>
+                    <td>Age and education level</td>
+                    <td>Are they adults, teenagers, graduates?</td>
+                    <td>Choose language, examples and approach (adults prefer practical, self-directed learning)</td>
+                  </tr>
+                  <tr>
+                    <td>Motivation and attitude</td>
+                    <td>Why are they learning? Willing or forced?</td>
+                    <td>Add relevance, goals and incentives</td>
+                  </tr>
+                  <tr>
+                    <td>Learning preferences</td>
+                    <td>Do they prefer video, text, discussion, hands-on?</td>
+                    <td>Offer multiple formats</td>
+                  </tr>
+                  <tr>
+                    <td>Digital skills and access</td>
+                    <td>Do they have devices, data, electricity, computer skills?</td>
+                    <td>Choose low-bandwidth or offline options where needed</td>
+                  </tr>
+                  <tr>
+                    <td>Language and culture</td>
+                    <td>What language is used? Cultural background?</td>
+                    <td>Use clear language and culturally relevant examples</td>
+                  </tr>
+                  <tr>
+                    <td>Special needs</td>
+                    <td>Visual, hearing, mobility or learning challenges?</td>
+                    <td>Apply accessibility and UDL principles</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert-box">
+              <strong>Key Point:</strong> About "learning styles" (visual, auditory, kinaesthetic): research does not strongly support matching teaching to one style. It is better to use multiple representations (words, pictures, practice) for everyone.
+            </div>
+
+            <p><strong>Adult learners (Knowles' andragogy)</strong></p>
+            <ul>
+              <li>Adults are self-directed and want to know why they are learning.</li>
+              <li>They bring rich experience.</li>
+              <li>They want problem-centred, practical learning.</li>
+              <li>They are motivated by internal reasons such as promotion and growth.</li>
+            </ul>
+
+            <h3 class="section-title">4. Context Analysis</h3>
+            <p>Context analysis studies the environment in which learning will happen (orienting context) and where learning will be applied (performance context).</p>
+            <ul>
+              <li><strong>Learning context:</strong> classroom, computer lab, home, workplace, online; time available; infrastructure; internet reliability; electricity; technical support.</li>
+              <li><strong>Performance (transfer) context:</strong> where learners will use the skills, for example in their own schools; whether supervisors support the use.</li>
+              <li><strong>Organisational context:</strong> policies, budget, management support, culture of change.</li>
+            </ul>
+            <div class="info-box">
+              <strong>Example:</strong> A teacher training in a rural area: poor internet and few laptops. The designer prepares printable notes, offline-downloadable videos and WhatsApp support instead of live video classes.
+            </div>
+
+            <h3 class="section-title">5. Putting the Analysis Together</h3>
+            <p>The results are combined in an analysis report that states the problem, the gap, causes, learner profile, context description, constraints and the recommended goal. This report guides objectives, assessments, strategies and technology choices.</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Analysis</th>
+                    <th>Main question</th>
+                    <th>Output</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Needs analysis</td><td>What is the gap, and is instruction the answer?</td><td>Prioritised needs and goals</td></tr>
+                  <tr><td>Learner analysis</td><td>Who are the learners?</td><td>Learner profile</td></tr>
+                  <tr><td>Context analysis</td><td>Where and under what conditions?</td><td>Constraints and resources list</td></tr>
+                  <tr><td>Task / content analysis</td><td>What must be learned (skills and knowledge)?</td><td>Breakdown of content and tasks</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="alert-box">
+              <strong>What I Must Remember for the Exam</strong><br><br>
+              • Need = gap between "what is" and "what should be".<br>
+              • Find the cause of the gap; instruction solves only knowledge/skill gaps.<br>
+              • Types of need: normative, felt, expressed, comparative, anticipated.<br>
+              • Data methods: surveys, interviews, focus groups, observation, document review, tests.<br>
+              • Instructional goal = broad statement of what learners will be able to do.<br>
+              • Learner analysis: prior knowledge, age, motivation, preferences, digital access, language, special needs.<br>
+              • Context analysis: learning, performance and organisational contexts.<br>
+              • Analysis results feed all later design decisions.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t3-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A school wants every teacher to upload lesson notes to the LMS (desired state), but only 20% do. Before planning training, what should the designer do?</p>
+              <button class="option-btn" onclick="checkScenario('t3q1', 'A')">A. Start training for all teachers immediately</button>
+              <button class="option-btn" onclick="checkScenario('t3q1', 'B')">B. Fine teachers who do not upload</button>
+              <button class="option-btn" onclick="checkScenario('t3q1', 'C')">C. Determine why 80% are not uploading, since causes may be skills, access, time or motivation</button>
+              <button class="option-btn" onclick="checkScenario('t3q1', 'D')">D. Install a faster LMS</button>
+              <div id="feedback-t3q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>Which finding is MOST likely to be solved by instruction?</p>
+              <button class="option-btn" onclick="checkScenario('t3q2', 'A')">A. Staff have laptops but the school Wi-Fi is down every afternoon</button>
+              <button class="option-btn" onclick="checkScenario('t3q2', 'B')">B. Staff are paid late and have low morale</button>
+              <button class="option-btn" onclick="checkScenario('t3q2', 'C')">C. Staff lack the skills to use newly installed grading software</button>
+              <button class="option-btn" onclick="checkScenario('t3q2', 'D')">D. Staff understand the new grading software but their supervisors forbid its use</button>
+              <div id="feedback-t3q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>A designer surveys 300 learners, interviews six heads of department and reviews past exam reports. This combination is a good example of</p>
+              <button class="option-btn" onclick="checkScenario('t3q3', 'A')">A. a task analysis</button>
+              <button class="option-btn" onclick="checkScenario('t3q3', 'B')">B. triangulating data from multiple methods and sources</button>
+              <button class="option-btn" onclick="checkScenario('t3q3', 'C')">C. formative assessment</button>
+              <button class="option-btn" onclick="checkScenario('t3q3', 'D')">D. summative evaluation</button>
+              <div id="feedback-t3q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>Teachers say they want a course on social media marketing, but data shows they cannot use basic spreadsheets required for their job. Which two types of need are in tension, and what should the designer prioritise?</p>
+              <button class="option-btn" onclick="checkScenario('t3q4', 'A')">A. Comparative need versus anticipated need; prioritise social media</button>
+              <button class="option-btn" onclick="checkScenario('t3q4', 'B')">B. Normative need versus expressed need; ignore both</button>
+              <button class="option-btn" onclick="checkScenario('t3q4', 'C')">C. Anticipated need versus expressed need; do nothing</button>
+              <button class="option-btn" onclick="checkScenario('t3q4', 'D')">D. Felt need versus normative need; prioritise the job-related gap supported by performance evidence while discussing the felt need with teachers</button>
+              <div id="feedback-t3q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>A learner analysis shows that most participants are mid-career teachers, highly experienced but anxious about technology. Which design response best reflects adult-learning principles?</p>
+              <button class="option-btn" onclick="checkScenario('t3q5', 'A')">A. Provide only self-study notes</button>
+              <button class="option-btn" onclick="checkScenario('t3q5', 'B')">B. Open with abstract theory and an assessment</button>
+              <button class="option-btn" onclick="checkScenario('t3q5', 'C')">C. Start with real work problems, explain why each skill matters, build on their experience and provide low-risk practice</button>
+              <button class="option-btn" onclick="checkScenario('t3q5', 'D')">D. Use childlike games to reduce anxiety</button>
+              <div id="feedback-t3q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>A designer plans live video lectures for district teachers, then discovers that most have intermittent electricity and expensive data. Which analysis should have caught this, and what is the best redesign?</p>
+              <button class="option-btn" onclick="checkScenario('t3q6', 'A')">A. Needs analysis; cancel the course</button>
+              <button class="option-btn" onclick="checkScenario('t3q6', 'B')">B. Context analysis; use downloadable low-data materials, audio, and a few scheduled live sessions</button>
+              <button class="option-btn" onclick="checkScenario('t3q6', 'C')">C. Learner analysis; shorten the video</button>
+              <button class="option-btn" onclick="checkScenario('t3q6', 'D')">D. Task analysis; add more videos</button>
+              <div id="feedback-t3q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A trainer says: "Half my learners are visual and half are auditory, so I will prepare two separate courses." Which comment is most consistent with current research?</p>
+              <button class="option-btn" onclick="checkScenario('t3q7', 'A')">A. Only auditory learners need transcripts</button>
+              <button class="option-btn" onclick="checkScenario('t3q7', 'B')">B. The plan is correct since styles strongly predict achievement</button>
+              <button class="option-btn" onclick="checkScenario('t3q7', 'C')">C. It is more effective to use multiple representations (words, visuals, practice) for all learners than to separate them by "style"</button>
+              <button class="option-btn" onclick="checkScenario('t3q7', 'D')">D. Learning styles are the only factor worth analysing</button>
+              <div id="feedback-t3q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>A needs assessment finds the gap is real but also finds that supervisors never allow staff to apply new skills. Which recommendation is best?</p>
+              <button class="option-btn" onclick="checkScenario('t3q8', 'A')">A. Train staff twice as long</button>
+              <button class="option-btn" onclick="checkScenario('t3q8', 'B')">B. Combine instruction with organisational action to enable transfer, such as supervisor briefing and policy support</button>
+              <button class="option-btn" onclick="checkScenario('t3q8', 'C')">C. Cancel all training</button>
+              <button class="option-btn" onclick="checkScenario('t3q8', 'D')">D. Evaluate with a reaction survey only</button>
+              <div id="feedback-t3q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>Which instructional goal is best written?</p>
+              <button class="option-btn" onclick="checkScenario('t3q9', 'A')">A. To improve teacher attitudes</button>
+              <button class="option-btn" onclick="checkScenario('t3q9', 'B')">B. To teach teachers about Moodle</button>
+              <button class="option-btn" onclick="checkScenario('t3q9', 'C')">C. Teachers will be able to build and deliver a Moodle course for their class</button>
+              <button class="option-btn" onclick="checkScenario('t3q9', 'D')">D. To expose teachers to the benefits of online learning</button>
+              <div id="feedback-t3q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>A designer finds that 70% of entrants have never used a mouse. What is the most appropriate design implication?</p>
+              <button class="option-btn" onclick="checkScenario('t3q10', 'A')">A. Add prerequisite training or an orientation on basic computer skills before the main course</button>
+              <button class="option-btn" onclick="checkScenario('t3q10', 'B')">B. Replace the course with a lecture</button>
+              <button class="option-btn" onclick="checkScenario('t3q10', 'C')">C. Assume they will learn quickly during the course</button>
+              <button class="option-btn" onclick="checkScenario('t3q10', 'D')">D. Remove interactive tasks from the course</button>
+              <div id="feedback-t3q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>Two rival needs are identified: (a) a small gap affecting many learners but causing little harm; (b) a large gap affecting few, but safety-critical. Which prioritisation is most defensible?</p>
+              <button class="option-btn" onclick="checkScenario('t3q11', 'A')">A. Consider importance, urgency, number affected and consequences; the safety-critical need may rank first despite fewer people</button>
+              <button class="option-btn" onclick="checkScenario('t3q11', 'B')">B. Choose the cheaper need to solve</button>
+              <button class="option-btn" onclick="checkScenario('t3q11', 'C')">C. Choose the need learners mention first</button>
+              <button class="option-btn" onclick="checkScenario('t3q11', 'D')">D. Always choose the need affecting most learners</button>
+              <div id="feedback-t3q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>A university plans a blended course for part-time students who work and travel. Which finding from learner and context analysis would MOST change the schedule?</p>
+              <button class="option-btn" onclick="checkScenario('t3q12', 'A')">A. The LMS logo is old</button>
+              <button class="option-btn" onclick="checkScenario('t3q12', 'B')">B. Most learners can study only after 9 p.m. and on weekends</button>
+              <button class="option-btn" onclick="checkScenario('t3q12', 'C')">C. Learners prefer blue interfaces</button>
+              <button class="option-btn" onclick="checkScenario('t3q12', 'D')">D. The library has new chairs</button>
+              <div id="feedback-t3q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>A designer relies entirely on questionnaires and gets a 12% response rate. What is the most appropriate response?</p>
+              <button class="option-btn" onclick="checkScenario('t3q13', 'A')">A. Treat the result as definitive</button>
+              <button class="option-btn" onclick="checkScenario('t3q13', 'B')">B. Stop the project</button>
+              <button class="option-btn" onclick="checkScenario('t3q13', 'C')">C. Repeat the same questionnaire unchanged</button>
+              <button class="option-btn" onclick="checkScenario('t3q13', 'D')">D. Supplement with interviews, observation and document review, and treat the low-response data cautiously</button>
+              <div id="feedback-t3q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>What is the BEST reason to document learner, context and needs findings in a single analysis report?</p>
+              <button class="option-btn" onclick="checkScenario('t3q14', 'A')">A. It provides a shared evidence base that guides objectives, assessments, strategies and technology choices</button>
+              <button class="option-btn" onclick="checkScenario('t3q14', 'B')">B. To replace the need for objectives</button>
+              <button class="option-btn" onclick="checkScenario('t3q14', 'C')">C. To avoid consulting stakeholders</button>
+              <button class="option-btn" onclick="checkScenario('t3q14', 'D')">D. To meet publishing requirements</button>
+              <div id="feedback-t3q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>A designer in a Ghanaian senior high school finds that students need exam-oriented revision, but teachers want project work. What is the best next step?</p>
+              <button class="option-btn" onclick="checkScenario('t3q15', 'A')">A. Follow students' preference only</button>
+              <button class="option-btn" onclick="checkScenario('t3q15', 'B')">B. Examine curriculum and assessment requirements, then negotiate a design that serves both, such as projects aligned to exam objectives</button>
+              <button class="option-btn" onclick="checkScenario('t3q15', 'C')">C. Follow teachers' preference only</button>
+              <button class="option-btn" onclick="checkScenario('t3q15', 'D')">D. Ignore both and use the designer's preference</button>
+              <div id="feedback-t3q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOPIC 4: THE ADDIE MODEL                   -->
+    <!-- ========================================== -->
+    <div id="module-topic4" class="module-wrapper">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t4-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t4-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t4-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 4: Instructional Design Models I: The ADDIE Model</h2>
+            <p><strong>Week 4 | Analysis, Design, Development, Implementation, Evaluation; strengths and limitations</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>An instructional design model is a framework or map that guides the designer through the process of creating instruction. Just as an architect follows a building plan, a designer follows a model so that nothing important is forgotten.</p>
+            <p>ADDIE is the most widely known generic ID model. The name is formed from its five phases: Analysis, Design, Development, Implementation and Evaluation. Many other models are variations of it. The exact origin of ADDIE is unclear (Molenda, 2003 describes it as "elusive"), but it is the standard reference point in the field.</p>
+
+            <h3 class="section-title">1. The Five Phases of ADDIE</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Phase</th>
+                    <th>Key question</th>
+                    <th>Main activities</th>
+                    <th>Output (deliverable)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Analysis</strong></td>
+                    <td>What needs to be learned, by whom, and where?</td>
+                    <td>Needs, learner, context, task and content analysis; set goals</td>
+                    <td>Analysis report; learner profile; goals</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Design</strong></td>
+                    <td>How will we teach it?</td>
+                    <td>Write objectives; design assessments; choose strategies and media; sequence content; storyboards</td>
+                    <td>Design document; blueprint; assessment plan</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Development</strong></td>
+                    <td>Let's build it.</td>
+                    <td>Produce materials, videos, slides, quizzes, LMS pages; test and revise (alpha/beta)</td>
+                    <td>Complete instructional materials; prototype</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Implementation</strong></td>
+                    <td>Deliver it.</td>
+                    <td>Train teachers/facilitators; set up LMS; deliver instruction; provide support</td>
+                    <td>Delivered course; learners in action</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Evaluation</strong></td>
+                    <td>Did it work?</td>
+                    <td>Formative evaluation (during) and summative evaluation (after); gather data; revise</td>
+                    <td>Evaluation report; improvement list</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert-box">
+              <strong>Key Point:</strong> Evaluation is not only the last step. In practice, formative evaluation takes place in every phase, so the process is iterative: you may return to an earlier phase when problems are found.
+            </div>
+
+            <h3 class="section-title">2. Each Phase in Simple Detail</h3>
+            <p><strong>A: Analysis</strong><br>
+            Find out the problem and the gap. Study learners and context. Decide whether instruction is the answer and state the goal.</p>
+
+            <p><strong>D: Design</strong></p>
+            <ul>
+              <li>Write clear, measurable learning objectives.</li>
+              <li>Plan how you will assess whether objectives were achieved.</li>
+              <li>Select strategies (for example, case studies, demonstration, group work).</li>
+              <li>Select media and technology and decide on the structure and sequence.</li>
+              <li>Prepare a design document and storyboards.</li>
+            </ul>
+
+            <p><strong>D: Development</strong></p>
+            <ul>
+              <li>Create the actual content: slides, videos, e-learning modules, worksheets, quizzes.</li>
+              <li>Build in the LMS or authoring tool.</li>
+              <li>Do pilot testing, then revise.</li>
+            </ul>
+
+            <p><strong>I: Implementation</strong></p>
+            <ul>
+              <li>Deliver the course to real learners.</li>
+              <li>Train instructors and support staff; prepare learners (orientation).</li>
+              <li>Manage logistics: venues, devices, internet, schedules, helpdesk.</li>
+            </ul>
+
+            <p><strong>E: Evaluation</strong></p>
+            <ul>
+              <li>Formative: to improve while the design is still being developed or delivered (pilot tests, expert reviews, learner feedback).</li>
+              <li>Summative: to judge the final effectiveness (results, satisfaction, impact on performance).</li>
+            </ul>
+            <div class="info-box">
+              <strong>Example:</strong> ADDIE in a school ICT project. Analysis: Form 2 students cannot create spreadsheets. Design: objectives, a hands-on activity plan, a quiz. Development: build tutorial videos and worksheets. Implementation: teach two classes in the ICT lab. Evaluation: student scores and feedback; revise the video length.
+            </div>
+
+            <h3 class="section-title">3. Strengths of ADDIE</h3>
+            <ul>
+              <li>Simple, logical and easy to remember.</li>
+              <li>Generic: it works for schools, training, e-learning and many other settings.</li>
+              <li>Ensures learners and needs are analysed before building.</li>
+              <li>Encourages evaluation and continuous improvement.</li>
+              <li>Provides clear deliverables at each stage, helpful for project management.</li>
+              <li>A base for other models.</li>
+            </ul>
+
+            <h3 class="section-title">4. Limitations (Criticisms) of ADDIE</h3>
+            <ul>
+              <li>When treated as strictly linear ("waterfall"), it is slow and inflexible.</li>
+              <li>Changes late in the project are costly if a problem is discovered after development.</li>
+              <li>It can lead to heavy documentation.</li>
+              <li>Stakeholders and learners may see the product only at the end.</li>
+              <li>It is a general framework, not detailed about how to design each step (it tells what, not exactly how).</li>
+              <li>Critics (including Molenda) say there is no single official version of ADDIE.</li>
+            </ul>
+            <div class="alert-box">
+              <strong>Key Point:</strong> These weaknesses led to rapid prototyping and agile approaches such as SAM (see Topic 5). The modern view is to use ADDIE iteratively, not as a rigid waterfall.
+            </div>
+
+            <h3 class="section-title">5. Linear vs. Iterative ADDIE</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Waterfall (linear) ADDIE</th>
+                    <th>Iterative ADDIE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Flow</strong></td>
+                    <td>Finish one phase before starting the next</td>
+                    <td>Move between phases; repeat cycles</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Feedback</strong></td>
+                    <td>Mostly at the end</td>
+                    <td>Throughout the process</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Risk</strong></td>
+                    <td>Errors found late</td>
+                    <td>Errors found early</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Suits</strong></td>
+                    <td>Stable, well-defined projects</td>
+                    <td>Complex or changing projects</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="alert-box">
+              <strong>What I Must Remember for the Exam</strong><br><br>
+              • ADDIE: Analysis, Design, Development, Implementation, Evaluation.<br>
+              • Deliverables: analysis report -> design document -> prototype/materials -> delivered course -> evaluation report.<br>
+              • Formative evaluation = to improve during the process; summative = to judge the final result.<br>
+              • Strengths: simple, generic, systematic, encourages evaluation.<br>
+              • Limitations: can be slow, rigid if linear, late discovery of errors, no single official version (Molenda, 2003).<br>
+              • Modern practice: use ADDIE iteratively. Rapid prototyping and SAM respond to its limits.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t4-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A pilot of a nearly finished online course shows that learners lack a prerequisite skill. Working iteratively within ADDIE, what is the best response?</p>
+              <button class="option-btn" onclick="checkScenario('t4q1', 'A')">A. Return to analysis and design to adjust entry requirements, add pre-training or revise the sequence</button>
+              <button class="option-btn" onclick="checkScenario('t4q1', 'B')">B. Remove the quiz that exposed the weakness</button>
+              <button class="option-btn" onclick="checkScenario('t4q1', 'C')">C. Proceed to implementation, since development is complete</button>
+              <button class="option-btn" onclick="checkScenario('t4q1', 'D')">D. Blame the learners and relaunch unchanged</button>
+              <div id="feedback-t4q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>A consultant skips analysis because "the client already knows what is needed". Which consequence is most likely?</p>
+              <button class="option-btn" onclick="checkScenario('t4q2', 'A')">A. A well-built solution to a problem that may not exist or may not be instructional</button>
+              <button class="option-btn" onclick="checkScenario('t4q2', 'B')">B. Faster delivery with no significant risk</button>
+              <button class="option-btn" onclick="checkScenario('t4q2', 'C')">C. Automatic improvement of evaluation results</button>
+              <button class="option-btn" onclick="checkScenario('t4q2', 'D')">D. Reduced need for implementation support</button>
+              <div id="feedback-t4q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>A university has finished building its modules and is now training tutors, enrolling learners and setting up a helpdesk. Which ADDIE phase is it in?</p>
+              <button class="option-btn" onclick="checkScenario('t4q3', 'A')">A. Development</button>
+              <button class="option-btn" onclick="checkScenario('t4q3', 'B')">B. Implementation</button>
+              <button class="option-btn" onclick="checkScenario('t4q3', 'C')">C. Design</button>
+              <button class="option-btn" onclick="checkScenario('t4q3', 'D')">D. Evaluation</button>
+              <div id="feedback-t4q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>In the development phase, a team first tests a module internally for broken links and errors, then with ten real learners. These two steps are best described as</p>
+              <button class="option-btn" onclick="checkScenario('t4q4', 'A')">A. summative evaluations of the programme</button>
+              <button class="option-btn" onclick="checkScenario('t4q4', 'B')">B. confirmative evaluations</button>
+              <button class="option-btn" onclick="checkScenario('t4q4', 'C')">C. alpha testing followed by a beta (pilot) test, both forms of formative evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t4q4', 'D')">D. needs analyses</button>
+              <div id="feedback-t4q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>A company followed a strict 18-month waterfall ADDIE cycle and discovered at the end that the platform it designed for had been replaced. Which limitation of ADDIE does this illustrate?</p>
+              <button class="option-btn" onclick="checkScenario('t4q5', 'A')">A. ADDIE cannot be used in corporate settings</button>
+              <button class="option-btn" onclick="checkScenario('t4q5', 'B')">B. ADDIE requires too much learner feedback</button>
+              <button class="option-btn" onclick="checkScenario('t4q5', 'C')">C. Late feedback and costly change when phases are completed in strict sequence</button>
+              <button class="option-btn" onclick="checkScenario('t4q5', 'D')">D. ADDIE has no analysis phase</button>
+              <div id="feedback-t4q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>Two teams both claim to use ADDIE but follow very different steps and deliverables. Which statement best explains this?</p>
+              <button class="option-btn" onclick="checkScenario('t4q6', 'A')">A. ADDIE has been officially replaced by SAM</button>
+              <button class="option-btn" onclick="checkScenario('t4q6', 'B')">B. ADDIE has no single authoritative version, which is why Molenda called it "elusive"; teams interpret it differently</button>
+              <button class="option-btn" onclick="checkScenario('t4q6', 'C')">C. One of the teams is certainly misusing the model</button>
+              <button class="option-btn" onclick="checkScenario('t4q6', 'D')">D. ADDIE applies only to K-12 settings</button>
+              <div id="feedback-t4q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A manager asks why evaluation should not wait until the end of the project. Which answer is most persuasive?</p>
+              <button class="option-btn" onclick="checkScenario('t4q7', 'A')">A. Formative evaluation in every phase catches problems earlier, when they are cheaper to fix</button>
+              <button class="option-btn" onclick="checkScenario('t4q7', 'B')">B. Learners dislike surveys at the end</button>
+              <button class="option-btn" onclick="checkScenario('t4q7', 'C')">C. Evaluation is cheaper when done only once</button>
+              <button class="option-btn" onclick="checkScenario('t4q7', 'D')">D. It ensures the final report is longer</button>
+              <div id="feedback-t4q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>Which output of the analysis phase would allow a design team to begin work with the least ambiguity?</p>
+              <button class="option-btn" onclick="checkScenario('t4q8', 'A')">A. An analysis report containing the gap, goals, learner profile and contextual constraints</button>
+              <button class="option-btn" onclick="checkScenario('t4q8', 'B')">B. A list of preferred software tools</button>
+              <button class="option-btn" onclick="checkScenario('t4q8', 'C')">C. A draft storyboard</button>
+              <button class="option-btn" onclick="checkScenario('t4q8', 'D')">D. A budget spreadsheet only</button>
+              <div id="feedback-t4q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>A ministry needs a stable compliance course for 20,000 staff. Requirements are fixed and the timeline is 12 months. Why is a structured ADDIE approach reasonable here?</p>
+              <button class="option-btn" onclick="checkScenario('t4q9', 'A')">A. Because iterative cycles are impossible in large projects</button>
+              <button class="option-btn" onclick="checkScenario('t4q9', 'B')">B. Because stable projects need no learner analysis</button>
+              <button class="option-btn" onclick="checkScenario('t4q9', 'C')">C. Clear, stable requirements allow thorough analysis and sequenced development with documented deliverables</button>
+              <button class="option-btn" onclick="checkScenario('t4q9', 'D')">D. Because ADDIE avoids evaluation, saving time</button>
+              <div id="feedback-t4q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>A team has two weeks to produce a sample module for a client whose requirements are still unclear. Which adaptation of ADDIE is most appropriate?</p>
+              <button class="option-btn" onclick="checkScenario('t4q10', 'A')">A. Skip design and development</button>
+              <button class="option-btn" onclick="checkScenario('t4q10', 'B')">B. Cancel evaluation permanently</button>
+              <button class="option-btn" onclick="checkScenario('t4q10', 'C')">C. Use short iterative cycles with a quick prototype to clarify requirements</button>
+              <button class="option-btn" onclick="checkScenario('t4q10', 'D')">D. Complete full analysis for six months</button>
+              <div id="feedback-t4q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>Learners score well on the post-test, but six months later supervisors see no change in job practice. Which action best uses ADDIE's evaluation phase?</p>
+              <button class="option-btn" onclick="checkScenario('t4q11', 'A')">A. Revisit design to add authentic practice, job aids and transfer support, then re-test</button>
+              <button class="option-btn" onclick="checkScenario('t4q11', 'B')">B. Replace the supervisors</button>
+              <button class="option-btn" onclick="checkScenario('t4q11', 'C')">C. Declare the course successful because test scores are high</button>
+              <button class="option-btn" onclick="checkScenario('t4q11', 'D')">D. Shorten the post-test</button>
+              <div id="feedback-t4q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>Which statement about ADDIE is most accurate for a practising designer?</p>
+              <button class="option-btn" onclick="checkScenario('t4q12', 'A')">A. It is only suitable for classroom lessons</button>
+              <button class="option-btn" onclick="checkScenario('t4q12', 'B')">B. It is a theory of learning</button>
+              <button class="option-btn" onclick="checkScenario('t4q12', 'C')">C. It is a generic process framework; it says what to do but relies on theory and other models for how to design the instruction</button>
+              <button class="option-btn" onclick="checkScenario('t4q12', 'D')">D. It gives detailed prescriptions for each learning strategy</button>
+              <div id="feedback-t4q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>A designer treats "implementation" as simply uploading the course to the LMS. Which critical activities are being neglected?</p>
+              <button class="option-btn" onclick="checkScenario('t4q13', 'A')">A. Writing objectives</button>
+              <button class="option-btn" onclick="checkScenario('t4q13', 'B')">B. Selecting a learning theory</button>
+              <button class="option-btn" onclick="checkScenario('t4q13', 'C')">C. Needs assessment and goal setting</button>
+              <button class="option-btn" onclick="checkScenario('t4q13', 'D')">D. Instructor training, learner orientation, technical support and monitoring</button>
+              <div id="feedback-t4q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>A project overran because serious design flaws were found only after full development. Which change would most reduce this risk next time?</p>
+              <button class="option-btn" onclick="checkScenario('t4q14', 'A')">A. Remove the design phase</button>
+              <button class="option-btn" onclick="checkScenario('t4q14', 'B')">B. Reduce analysis to save time</button>
+              <button class="option-btn" onclick="checkScenario('t4q14', 'C')">C. Postpone all reviews until the final product is complete</button>
+              <button class="option-btn" onclick="checkScenario('t4q14', 'D')">D. Insert formative reviews and a prototype check after each phase, and allow return to earlier phases</button>
+              <div id="feedback-t4q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>An evaluator finds that a course meets its objectives but costs three times more than comparable programmes. Which conclusion best fits the purpose of summative evaluation?</p>
+              <button class="option-btn" onclick="checkScenario('t4q15', 'A')">A. Only learner satisfaction matters</button>
+              <button class="option-btn" onclick="checkScenario('t4q15', 'B')">B. The evidence supports a decision about the course's worth, which may include redesign for efficiency</button>
+              <button class="option-btn" onclick="checkScenario('t4q15', 'C')">C. Cost is irrelevant to evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t4q15', 'D')">D. The course must be cancelled automatically</button>
+              <div id="feedback-t4q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOPIC 5: KEMP, SAM & RAPID PROTOTYPING     -->
+    <!-- ========================================== -->
+    <div id="module-topic5" class="module-wrapper">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t5-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t5-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t5-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 5: Instructional Design Models II: Dick and Carey, Kemp, SAM and Rapid Prototyping</h2>
+            <p><strong>Week 5 | Systems approach, Kemp model, Successive Approximation Model</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>Different projects need different models. Some models are very detailed and step-by-step (Dick and Carey); some are flexible and learner-centred (Kemp); others are fast and repeated (SAM, rapid prototyping). A professional designer should be able to compare them and choose the one that fits the context.</p>
+
+            <h3 class="section-title">1. The Dick and Carey Systems Approach Model</h3>
+            <p>Developed by Walter Dick and Lou Carey, this model treats instruction as a system in which learner, instructor, materials and environment all interact. It focuses strongly on the link between objectives, instruction and assessment. It has ten components:</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>Component</th>
+                    <th>Meaning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>Identify instructional goals</td><td>What should learners be able to do?</td></tr>
+                  <tr><td>2</td><td>Conduct instructional analysis</td><td>Break the goal into steps and skills</td></tr>
+                  <tr><td>3</td><td>Analyse learners and contexts</td><td>Entry skills, characteristics, setting</td></tr>
+                  <tr><td>4</td><td>Write performance objectives</td><td>Specific, measurable outcomes</td></tr>
+                  <tr><td>5</td><td>Develop assessment instruments</td><td>Tests/rubrics matched to objectives</td></tr>
+                  <tr><td>6</td><td>Develop instructional strategy</td><td>Activities, grouping, delivery and sequence</td></tr>
+                  <tr><td>7</td><td>Develop and select instructional materials</td><td>Create or choose suitable materials</td></tr>
+                  <tr><td>8</td><td>Design and conduct formative evaluation</td><td>Try out and improve while developing</td></tr>
+                  <tr><td>9</td><td>Revise instruction</td><td>Improve based on feedback and data</td></tr>
+                  <tr><td>10</td><td>Design and conduct summative evaluation</td><td>Judge the overall value of the instruction</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li><strong>Strengths:</strong> very thorough; strong alignment of objectives, strategies and tests; good for content-heavy training.</li>
+              <li><strong>Limitations:</strong> looks linear and heavy; can be time-consuming; may feel too rigid for fast projects.</li>
+            </ul>
+            <div class="alert-box">
+              <strong>Key Point:</strong> Notice that the Dick and Carey model puts the assessment (step 5) before the strategy (step 6): you decide how you will measure success before you decide how to teach. This is called "backward" thinking.
+            </div>
+
+            <h3 class="section-title">2. The Kemp Model (Morrison, Ross and Kemp)</h3>
+            <p>Kemp's model is flexible and non-linear. It is drawn as an oval with elements that can be done in any order and revisited. It focuses strongly on the learner and the whole programme (planning, revision and evaluation are continuous).</p>
+            <ul>
+              <li><strong>Nine elements:</strong> identify instructional problems and goals; examine learner characteristics; identify subject content and analyse task components; state instructional objectives; sequence content; design instructional strategies; plan the instructional message and delivery; develop evaluation instruments; select resources to support learning.</li>
+              <li><strong>Surrounding processes:</strong> planning, project management, support services, formative evaluation, summative evaluation, confirmative evaluation, revision.</li>
+              <li><strong>Confirmative evaluation</strong> checks whether the instruction continues to be effective over time.</li>
+              <li><strong>Strengths:</strong> flexible; learner-centred; allows any starting point; continuous revision.</li>
+              <li><strong>Limitations:</strong> less structured for beginners; may need a skilled designer to manage the flexibility.</li>
+            </ul>
+
+            <h3 class="section-title">3. Rapid Prototyping</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> Rapid prototyping is the approach of quickly building a simple working version (prototype) of the instruction, testing it with users, and improving it repeatedly.
+            </div>
+            <ul>
+              <li>Learners and clients see something early, so problems are found early.</li>
+              <li>It saves time and cost compared with building everything before testing.</li>
+              <li>Useful for e-learning, apps and complex or uncertain projects.</li>
+            </ul>
+            <div class="info-box">
+              <strong>Example:</strong> Instead of building a 10-module Moodle course, the team builds Module 1 quickly, tests it with five students, improves it, and then continues.
+            </div>
+
+            <h3 class="section-title">4. SAM: Successive Approximation Model (Michael Allen)</h3>
+            <p>SAM is an agile model that grew from criticism of ADDIE. Instead of perfect planning followed by one big build, SAM works in short, repeated cycles with continuous collaboration and review. "Successive approximation" means getting closer and closer to the final product by repeated improvements.</p>
+            
+            <p><strong>SAM1 (simpler, for small projects)</strong></p>
+            <ul>
+              <li>Evaluate (gather information, background).</li>
+              <li>Design (plan and prototype).</li>
+              <li>Develop (build and review).</li>
+              <li>Repeat the design-develop cycle until the product is ready.</li>
+            </ul>
+
+            <p><strong>SAM2 (for larger projects) has three phases</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Phase</th>
+                    <th>What happens</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Preparation</td>
+                    <td>Gather information and hold a savvy start, a collaborative brainstorming session with the team and stakeholders to share ideas and create early prototypes</td>
+                  </tr>
+                  <tr>
+                    <td>Iterative Design</td>
+                    <td>Project planning, then repeated cycles of design, prototype and review</td>
+                  </tr>
+                  <tr>
+                    <td>Iterative Development</td>
+                    <td>Repeated cycles of develop, implement and evaluate until the final release (the "gold" version)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li><strong>Strengths:</strong> fast, collaborative, flexible, lowers risk, stakeholders involved early.</li>
+              <li><strong>Limitations:</strong> needs frequent stakeholder availability; can lead to "scope creep" (the project keeps growing); needs good project management.</li>
+            </ul>
+
+            <h3 class="section-title">5. Comparing the Models</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Feature</th>
+                    <th>ADDIE</th>
+                    <th>Dick & Carey</th>
+                    <th>Kemp</th>
+                    <th>SAM</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Nature</strong></td>
+                    <td>Generic, 5 phases</td>
+                    <td>Systems approach, 10 steps</td>
+                    <td>Flexible, non-linear</td>
+                    <td>Agile, iterative</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Structure</strong></td>
+                    <td>Mostly sequential (can iterate)</td>
+                    <td>Sequential with feedback loops</td>
+                    <td>Any order, continuous revision</td>
+                    <td>Short repeated cycles</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Speed</strong></td>
+                    <td>Moderate to slow</td>
+                    <td>Slower</td>
+                    <td>Moderate</td>
+                    <td>Fast</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Best for</strong></td>
+                    <td>General projects, beginners</td>
+                    <td>Detailed training with strong alignment</td>
+                    <td>Learner-focused programmes</td>
+                    <td>Rapid e-learning, uncertain requirements</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Main criticism</strong></td>
+                    <td>Can be rigid</td>
+                    <td>Heavy and time-consuming</td>
+                    <td>Needs expertise</td>
+                    <td>Needs constant collaboration</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>How to choose a model</strong></p>
+            <ul>
+              <li>Consider time and budget: tight deadlines favour SAM / rapid prototyping.</li>
+              <li>Consider clarity of requirements: clear requirements suit ADDIE or Dick & Carey; unclear ones suit SAM.</li>
+              <li>Consider team experience: beginners benefit from structured models.</li>
+              <li>Consider project size and risk: high risk benefits from early prototyping.</li>
+              <li>Often designers combine models.</li>
+            </ul>
+
+            <div class="alert-box">
+              <strong>What I Must Remember for the Exam</strong><br><br>
+              • Dick & Carey: 10 components; systems view; strong alignment of objectives-assessment-strategy; formative then summative evaluation.<br>
+              • Kemp: flexible, non-linear, learner-centred, continuous planning and revision; includes confirmative evaluation.<br>
+              • Rapid prototyping: build quickly, test early, improve repeatedly.<br>
+              • SAM (Allen): agile; successive approximation; SAM1 (Evaluate, Design, Develop) and SAM2 (Preparation, Iterative Design, Iterative Development); savvy start.<br>
+              • Choose a model according to time, budget, clarity of requirements, team skills and risk.<br>
+              • Be ready to compare models in a table and justify your choice.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t5-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A design team writes a final examination only after all materials are produced. Which criticism from the Dick and Carey perspective is most relevant?</p>
+              <button class="option-btn" onclick="checkScenario('t5q1', 'A')">A. Assessment should be limited to formative quizzes</button>
+              <button class="option-btn" onclick="checkScenario('t5q1', 'B')">B. Assessment instruments should be developed before the instructional strategy so that instruction is aligned with measured objectives</button>
+              <button class="option-btn" onclick="checkScenario('t5q1', 'C')">C. Examinations should never be written</button>
+              <button class="option-btn" onclick="checkScenario('t5q1', 'D')">D. Materials should be produced before objectives</button>
+              <div id="feedback-t5q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>A company needs a thorough training programme for a stable, high-stakes skill with tight alignment among objectives, strategy and tests. Which model best fits?</p>
+              <button class="option-btn" onclick="checkScenario('t5q2', 'A')">A. Dick and Carey systems approach</button>
+              <button class="option-btn" onclick="checkScenario('t5q2', 'B')">B. A savvy start only</button>
+              <button class="option-btn" onclick="checkScenario('t5q2', 'C')">C. Rapid prototyping alone</button>
+              <button class="option-btn" onclick="checkScenario('t5q2', 'D')">D. An unstructured trial-and-error approach</button>
+              <div id="feedback-t5q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>A project's stakeholders keep changing requirements; designers want to revisit any element at any time and keep planning and revision continuous. Which model offers this flexibility?</p>
+              <button class="option-btn" onclick="checkScenario('t5q3', 'A')">A. Dick and Carey</button>
+              <button class="option-btn" onclick="checkScenario('t5q3', 'B')">B. Strict waterfall ADDIE</button>
+              <button class="option-btn" onclick="checkScenario('t5q3', 'C')">C. Programmed instruction</button>
+              <button class="option-btn" onclick="checkScenario('t5q3', 'D')">D. Kemp</button>
+              <div id="feedback-t5q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>A university has six weeks to deliver a module and requirements are unclear. Which approach is most defensible?</p>
+              <button class="option-btn" onclick="checkScenario('t5q4', 'A')">A. SAM or rapid prototyping with early prototypes and frequent stakeholder review</button>
+              <button class="option-btn" onclick="checkScenario('t5q4', 'B')">B. Delay until requirements are final</button>
+              <button class="option-btn" onclick="checkScenario('t5q4', 'C')">C. A single big-bang release at the end</button>
+              <button class="option-btn" onclick="checkScenario('t5q4', 'D')">D. A long linear sequence with all documents finished first</button>
+              <div id="feedback-t5q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>In SAM2, the "savvy start" is most useful because it</p>
+              <button class="option-btn" onclick="checkScenario('t5q5', 'A')">A. replaces all evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t5q5', 'B')">B. is a software tool for authoring</button>
+              <button class="option-btn" onclick="checkScenario('t5q5', 'C')">C. is the final examination of learners</button>
+              <button class="option-btn" onclick="checkScenario('t5q5', 'D')">D. brings stakeholders and designers together to share ideas and produce early prototypes and shared understanding</button>
+              <div id="feedback-t5q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>The project sponsor can attend only one meeting at the beginning and then will be unavailable for months. Which model is most at risk?</p>
+              <button class="option-btn" onclick="checkScenario('t5q6', 'A')">A. Dick and Carey, because it has no evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t5q6', 'B')">B. ADDIE, because it has five phases</button>
+              <button class="option-btn" onclick="checkScenario('t5q6', 'C')">C. SAM, which depends on frequent stakeholder collaboration and review</button>
+              <button class="option-btn" onclick="checkScenario('t5q6', 'D')">D. None of them</button>
+              <div id="feedback-t5q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A team plans a 10-module Moodle course. After building and testing Module 1 with five students, they find the navigation confusing and fix it before building the rest. This illustrates</p>
+              <button class="option-btn" onclick="checkScenario('t5q7', 'A')">A. task analysis</button>
+              <button class="option-btn" onclick="checkScenario('t5q7', 'B')">B. summative evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t5q7', 'C')">C. rapid prototyping reducing the cost of late changes</button>
+              <button class="option-btn" onclick="checkScenario('t5q7', 'D')">D. confirmative evaluation</button>
+              <div id="feedback-t5q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>A year after launching a course, a college checks whether it still meets learner and employer needs. Which Kemp-related concept is this?</p>
+              <button class="option-btn" onclick="checkScenario('t5q8', 'A')">A. Formative evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t5q8', 'B')">B. Confirmative evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t5q8', 'C')">C. Pilot testing</button>
+              <button class="option-btn" onclick="checkScenario('t5q8', 'D')">D. Needs assessment</button>
+              <div id="feedback-t5q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>Which statement correctly distinguishes SAM from a strictly linear ADDIE?</p>
+              <button class="option-btn" onclick="checkScenario('t5q9', 'A')">A. SAM has no development stage</button>
+              <button class="option-btn" onclick="checkScenario('t5q9', 'B')">B. SAM prohibits prototypes</button>
+              <button class="option-btn" onclick="checkScenario('t5q9', 'C')">C. SAM is used only for classroom teaching</button>
+              <button class="option-btn" onclick="checkScenario('t5q9', 'D')">D. SAM works in short, repeated design-develop-review cycles with continuous collaboration rather than completing each phase before the next</button>
+              <div id="feedback-t5q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>A university must produce full documentation for accreditation but also wants quick prototypes. Which approach is most sensible?</p>
+              <button class="option-btn" onclick="checkScenario('t5q10', 'A')">A. Combine models: use a structured approach for analysis, alignment and documentation, and rapid prototyping in development</button>
+              <button class="option-btn" onclick="checkScenario('t5q10', 'B')">B. Abandon accreditation</button>
+              <button class="option-btn" onclick="checkScenario('t5q10', 'C')">C. Choose one model and ignore the other requirement</button>
+              <button class="option-btn" onclick="checkScenario('t5q10', 'D')">D. Use SAM without documentation</button>
+              <div id="feedback-t5q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>A team has just written performance objectives following Dick and Carey. Which step comes next if they are faithful to the model?</p>
+              <button class="option-btn" onclick="checkScenario('t5q11', 'A')">A. Conduct summative evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t5q11', 'B')">B. Develop instructional materials</button>
+              <button class="option-btn" onclick="checkScenario('t5q11', 'C')">C. Develop assessment instruments matched to the objectives</button>
+              <button class="option-btn" onclick="checkScenario('t5q11', 'D')">D. Revise instruction</button>
+              <div id="feedback-t5q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>For a two-week, low-budget pilot with an experienced team and fast-changing needs, which criticism of the Dick and Carey model is most relevant?</p>
+              <button class="option-btn" onclick="checkScenario('t5q12', 'A')">A. It has no evaluation component</button>
+              <button class="option-btn" onclick="checkScenario('t5q12', 'B')">B. It lacks objectives</button>
+              <button class="option-btn" onclick="checkScenario('t5q12', 'C')">C. It can be heavy and time-consuming for small or rapid projects</button>
+              <button class="option-btn" onclick="checkScenario('t5q12', 'D')">D. It ignores learners</button>
+              <div id="feedback-t5q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>A government department with little design experience must deliver a large course. Which model offers the most structure for novices?</p>
+              <button class="option-btn" onclick="checkScenario('t5q13', 'A')">A. An unstructured approach</button>
+              <button class="option-btn" onclick="checkScenario('t5q13', 'B')">B. A structured model such as Dick and Carey or ADDIE, with clear steps and deliverables</button>
+              <button class="option-btn" onclick="checkScenario('t5q13', 'C')">C. SAM without a project manager</button>
+              <button class="option-btn" onclick="checkScenario('t5q13', 'D')">D. Kemp, because it prescribes a single order</button>
+              <div id="feedback-t5q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>A team is repeating cycles of develop, implement and evaluate until a final release version is ready. In SAM2 this corresponds to</p>
+              <button class="option-btn" onclick="checkScenario('t5q14', 'A')">A. Iterative Design</button>
+              <button class="option-btn" onclick="checkScenario('t5q14', 'B')">B. Savvy start</button>
+              <button class="option-btn" onclick="checkScenario('t5q14', 'C')">C. Iterative Development</button>
+              <button class="option-btn" onclick="checkScenario('t5q14', 'D')">D. Preparation</button>
+              <div id="feedback-t5q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>Which justification for choosing an ID model is strongest in a professional report?</p>
+              <button class="option-btn" onclick="checkScenario('t5q15', 'A')">A. It fits the project constraints: time, clarity of requirements, risk, team experience and stakeholder availability</button>
+              <button class="option-btn" onclick="checkScenario('t5q15', 'B')">B. It is the model the designer is most familiar with</button>
+              <button class="option-btn" onclick="checkScenario('t5q15', 'C')">C. It has the most steps</button>
+              <button class="option-btn" onclick="checkScenario('t5q15', 'D')">D. It is the most popular model</button>
+              <div id="feedback-t5q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+  </div> <!-- End App Layout -->
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="max-width: 1100px; margin: 0 auto;">
+      &copy; 2026 Prinesther Educational Consult | Instructional Design Module
+    </div>
+  </footer>
+
+  <script>
+    // Module Switcher for Top-Right Dropdown
+    function switchModule(moduleId) {
+      document.querySelectorAll('.module-wrapper').forEach(el => el.classList.remove('active'));
+      document.getElementById(moduleId).classList.add('active');
+    }
+
+    // Sub-Tab Switcher
+    function switchTab(tabId, btnElement) {
+      const activeModule = btnElement.closest('.module-wrapper');
+      
+      activeModule.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      activeModule.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      btnElement.classList.add('active');
+    }
+
+    // Interactive Knowledge Check Answers (Topics 3, 4, 5)
+    const scenarioAnswers = {
+      // Topic 3
+      't3q1': { correct: 'C', text: "Correct! Determine the cause first; instruction may not solve the problem if it's based on motivation or access." },
+      't3q2': { correct: 'C', text: "Correct! A lack of skills is a knowledge gap that instruction can directly solve." },
+      't3q3': { correct: 'B', text: "Correct! Using surveys, interviews, and document reviews triangulates data for a complete picture." },
+      't3q4': { correct: 'D', text: "Correct! The job-related gap (normative need) should be prioritized over the felt need, though both should be discussed." },
+      't3q5': { correct: 'C', text: "Correct! Adult learners (andragogy) want problem-centred, practical learning built on their experience." },
+      't3q6': { correct: 'B', text: "Correct! Context analysis studies the environment, including internet reliability and electricity." },
+      't3q7': { correct: 'C', text: "Correct! Research does not support matching teaching to one style; multiple representations work best for everyone." },
+      't3q8': { correct: 'B', text: "Correct! If supervisors don't allow transfer of skills, instruction alone fails. You need organizational support." },
+      't3q9': { correct: 'C', text: "Correct! Goals must state what the learners will do, not what the teacher will do." },
+      't3q10': { correct: 'A', text: "Correct! If prerequisite entry behaviours are missing, add pre-training before the main course." },
+      't3q11': { correct: 'A', text: "Correct! Importance and urgency (like safety) can rank a need higher even if it affects fewer people." },
+      't3q12': { correct: 'B', text: "Correct! Knowing they can only study late and on weekends shifts the design to asynchronous, self-paced delivery." },
+      't3q13': { correct: 'D', text: "Correct! A 12% response is low; supplement with other methods and treat the survey data cautiously." },
+      't3q14': { correct: 'A', text: "Correct! The analysis report guides all future decisions regarding objectives, strategies, and technology." },
+      't3q15': { correct: 'B', text: "Correct! Negotiate a design that serves both by aligning the preferred method (projects) with the required outcomes (exams)." },
+      
+      // Topic 4
+      't4q1': { correct: 'A', text: "Correct! Working iteratively means you return to earlier phases (Analysis/Design) to fix problems found during Development." },
+      't4q2': { correct: 'A', text: "Correct! Skipping analysis risks building a solution for a non-instructional problem." },
+      't4q3': { correct: 'B', text: "Correct! Training tutors, enrolling learners, and setting up helpdesks all happen during Implementation." },
+      't4q4': { correct: 'C', text: "Correct! Internal checks (alpha) and pilot testing with real learners (beta) are forms of formative evaluation." },
+      't4q5': { correct: 'C', text: "Correct! A strict linear/waterfall ADDIE makes late changes extremely costly." },
+      't4q6': { correct: 'B', text: "Correct! Molenda (2003) noted there is no single authoritative version of ADDIE; it is an umbrella framework." },
+      't4q7': { correct: 'A', text: "Correct! Formative evaluation catches problems early when they are much cheaper and easier to fix." },
+      't4q8': { correct: 'A', text: "Correct! The analysis report (with gaps, goals, and learner profiles) is the definitive output of the Analysis phase." },
+      't4q9': { correct: 'C', text: "Correct! Stable, clear requirements over a long timeline suit a structured, sequenced ADDIE approach perfectly." },
+      't4q10': { correct: 'C', text: "Correct! When requirements are unclear and time is short, iterative cycles with quick prototypes work best." },
+      't4q11': { correct: 'A', text: "Correct! If test scores are high but job practice hasn't changed, you must revisit the design to support real-world transfer." },
+      't4q12': { correct: 'C', text: "Correct! ADDIE is a generic process framework; it tells you the steps but relies on learning theories for how to teach." },
+      't4q13': { correct: 'D', text: "Correct! Implementation includes instructor training, learner orientation, technical support, and monitoring." },
+      't4q14': { correct: 'D', text: "Correct! Formative reviews and prototypes allow you to return to earlier phases, greatly reducing late-stage risk." },
+      't4q15': { correct: 'B', text: "Correct! Summative evaluation judges the overall worth of the course, which includes analyzing cost vs. benefits." },
+
+      // Topic 5
+      't5q1': { correct: 'B', text: "Correct! Dick and Carey puts assessment development (Step 5) BEFORE instructional strategy (Step 6)." },
+      't5q2': { correct: 'A', text: "Correct! The Dick and Carey model is best for thorough, stable training with tight alignment between objectives, strategy, and tests." },
+      't5q3': { correct: 'D', text: "Correct! The Kemp model is a non-linear oval that allows continuous planning and revision at any time." },
+      't5q4': { correct: 'A', text: "Correct! Unclear requirements and short timelines strongly favor SAM or rapid prototyping." },
+      't5q5': { correct: 'D', text: "Correct! The 'savvy start' brings stakeholders and designers together early to brainstorm and prototype." },
+      't5q6': { correct: 'C', text: "Correct! SAM requires frequent, ongoing collaboration and review with stakeholders. If they are absent, SAM fails." },
+      't5q7': { correct: 'C', text: "Correct! Building and testing a quick prototype (Module 1) allows you to fix problems cheaply before building the rest." },
+      't5q8': { correct: 'B', text: "Correct! Confirmative evaluation (from the Kemp model) checks whether the instruction remains effective over time." },
+      't5q9': { correct: 'D', text: "Correct! SAM uses short, repeated design-develop-review cycles rather than completing one phase fully before the next." },
+      't5q10': { correct: 'A', text: "Correct! Combining models allows you to meet strict documentation requirements while still testing early with prototypes." },
+      't5q11': { correct: 'C', text: "Correct! In Dick and Carey, Step 4 is Objectives, and Step 5 is Develop Assessment Instruments." },
+      't5q12': { correct: 'C', text: "Correct! Dick and Carey's 10 steps can be too heavy and time-consuming for small or rapid projects." },
+      't5q13': { correct: 'B', text: "Correct! Structured models like Dick and Carey provide clear steps and deliverables, which helps novices stay on track." },
+      't5q14': { correct: 'C', text: "Correct! In SAM2, Iterative Development repeats develop-implement-evaluate cycles until the final release." },
+      't5q15': { correct: 'A', text: "Correct! A professional choice is justified by project constraints like time, risk, and clarity of requirements." }
+    };
+
+    function checkScenario(qNum, selected) {
+      const box = document.getElementById(`feedback-${qNum}`);
+      const data = scenarioAnswers[qNum];
+      box.style.display = 'block';
+
+      if (selected === data.correct) {
+        box.className = 'feedback-box feedback-correct';
+        box.innerText = data.text;
+      } else {
+        box.className = 'feedback-box feedback-wrong';
+        box.innerText = "✗ Incorrect. Please review the relevant topic notes.";
+      }
+    }
+  </script>
+</body>
+</html>

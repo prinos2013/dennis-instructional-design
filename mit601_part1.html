@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIT 601 - Instructional Design and Development</title>
+  
+  <link rel="icon" href="icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icon-512.png">
+  <link rel="manifest" href="manifest.json">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+
+  <style>
+    :root {
+      --primary: #003366;
+      --primary-dark: #001f4d;
+      --primary-light: #e6f0ff;
+      --yellow: #f2a900;
+      --yellow-light: #fff8e6;
+      --red: #d90429;
+      --red-light: #ffe5e8;
+      --white: #ffffff;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f5;
+      --gray-200: #e9ecef;
+      --gray-700: #495057;
+      --gray-900: #212529;
+      --success: #2b9348;
+      --border-radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 20px 20px;
+      border-bottom: 6px solid var(--yellow);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-badge {
+      width: 65px;
+      height: 65px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 3px solid var(--yellow);
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .header-text h1 {
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .motto-ribbon {
+      display: inline-block;
+      background-color: var(--yellow);
+      color: var(--primary-dark);
+      font-weight: bold;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .compiler-text {
+      color: var(--white);
+      font-size: 0.9rem;
+      margin-top: 8px;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    .module-dropdown {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 2px solid var(--yellow);
+      background: var(--white);
+      color: var(--primary-dark);
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 100%;
+    }
+
+    /* NAVIGATION TABS */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .nav-btn {
+      padding: 16px 18px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+    }
+
+    /* MAIN CONTENT WRAPPER */
+    .app-layout {
+      flex-grow: 1;
+    }
+
+    .module-wrapper {
+      display: none;
+    }
+
+    .module-wrapper.active {
+      display: block;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px 50px 15px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* CARDS & FORMATTING */
+    .card {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .card-title {
+      color: var(--primary);
+      font-size: 1.3rem;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title {
+      color: var(--primary-dark);
+      font-size: 1.15rem;
+      margin: 24px 0 10px 0;
+      border-left: 4px solid var(--yellow);
+      padding-left: 10px;
+    }
+
+    .alert-box {
+      background: var(--yellow-light);
+      border-left: 5px solid var(--yellow);
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      font-size: 0.95rem;
+    }
+
+    .info-box {
+      background: var(--primary-light);
+      border-left: 5px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      font-size: 0.95rem;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* SCENARIO LAB / INTERACTIVE */
+    .scenario-box {
+      border-left: 4px solid var(--primary);
+      background: var(--gray-50);
+      padding: 16px;
+      margin-bottom: 24px;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      margin: 8px 0;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+
+    .option-btn:hover {
+      background: var(--gray-100);
+      border-color: var(--primary);
+    }
+
+    .feedback-box {
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.95rem;
+      display: none;
+      font-weight: 500;
+    }
+
+    .feedback-correct {
+      background: #e8f5e9;
+      color: #1b5e20;
+      border: 1px solid #a5d6a7;
+    }
+
+    .feedback-wrong {
+      background: var(--red-light);
+      color: #b71c1c;
+      border: 1px solid #ef9a9a;
+    }
+
+    /* TABLES */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      min-width: 600px;
+    }
+
+    th, td {
+      border: 1px solid var(--gray-200);
+      padding: 12px;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    th {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--gray-50);
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: var(--white);
+      border-top: 1px solid var(--gray-200);
+      padding: 24px 20px;
+      text-align: center;
+      color: var(--gray-700);
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="header-left">
+        <div class="logo-badge">UCC</div>
+        <div class="header-text">
+          <h1>University of Cape Coast</h1>
+          <div><span class="motto-ribbon">MIT 601: Instructional Design</span></div>
+          <div class="compiler-text">Compiled by Prince Osei (ED/ITD/25/0026)<br>Prepared by Amponsah Dennis</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <select class="module-dropdown" onchange="switchModule(this.value)">
+          <option value="module-summary">Course Summary</option>
+          <option value="module-topic1">Topic 1: Intro to ID</option>
+          <option value="module-topic2">Topic 2: Foundations</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    
+    <!-- ========================================== -->
+    <!-- COURSE SUMMARY                             -->
+    <!-- ========================================== -->
+    <div id="module-summary" class="module-wrapper active">
+      <main>
+        <div class="card">
+          <h2 class="card-title">Course Summary Note</h2>
+          <h3 class="section-title">What Is This Course About?</h3>
+          <p>Instructional Design and Development using Technology (MIT 601) teaches you how to plan, build, deliver and improve teaching and learning experiences in a systematic way, using digital tools.</p>
+          <p>Instead of teaching "by instinct", you learn to follow a process: find out what learners need, state clear objectives, design suitable assessments and activities, choose the right media, build the materials, deliver them, and evaluate the results.</p>
+          <p>The course sits at the heart of the M.Ed. Information Technology programme because it joins three things: pedagogy (how people learn), content (what is taught) and technology (the tools used).</p>
+          <p>Graduates are expected to lead e-learning and digital transformation in schools, colleges, training institutions and workplaces.</p>
+
+          <h3 class="section-title">Why Is It Important?</h3>
+          <ul>
+            <li>It makes teaching effective, efficient and engaging.</li>
+            <li>It helps you design online, blended and technology-enhanced courses (for example, on Moodle).</li>
+            <li>It trains you to make decisions using theory and evidence, not guesswork.</li>
+            <li>It prepares you for careers as instructional designers, e-learning developers, ICT coordinators and educational technology leaders.</li>
+          </ul>
+
+          <h3 class="section-title">The Big Picture: Five Major Areas</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Major area</th>
+                  <th>Topics</th>
+                  <th>What you must understand</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1. Foundations</td>
+                  <td>1, 2</td>
+                  <td>What ID is; learning theories (behaviourism, cognitivism, constructivism, connectivism); memory and cognitive load</td>
+                </tr>
+                <tr>
+                  <td>2. Analysis and models</td>
+                  <td>3, 4, 5</td>
+                  <td>Needs, learner and context analysis; ADDIE, Dick & Carey, Kemp, SAM, rapid prototyping</td>
+                </tr>
+                <tr>
+                  <td>3. Design</td>
+                  <td>6, 7, 8, 9</td>
+                  <td>Objectives (Mager, ABCD, Bloom); assessment and rubrics; Gagné, Merrill, ASSURE; Mayer's multimedia principles; UDL</td>
+                </tr>
+                <tr>
+                  <td>4. Development, delivery and management</td>
+                  <td>10, 11, 12</td>
+                  <td>Storyboarding and authoring tools; online course design and the Community of Inquiry; implementation, training and copyright</td>
+                </tr>
+                <tr>
+                  <td>5. Evaluation, trends and project</td>
+                  <td>13, 14, 15</td>
+                  <td>Formative and summative evaluation; Kirkpatrick; QM and OSCQR; AI, adaptive learning, gamification; project and reflection</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="section-title">Highest-Priority Items for Examinations</h3>
+          <ul>
+            <li>ADDIE phases and what happens in each; strengths and limitations.</li>
+            <li>Comparison of ADDIE, Dick & Carey, Kemp and SAM, and how to choose a model.</li>
+            <li>The four learning theories and their design implications.</li>
+            <li>Writing objectives: Mager (Performance, Condition, Criterion), ABCD, and the revised Bloom's taxonomy.</li>
+            <li>Formative vs. summative assessment; rubrics; alignment.</li>
+            <li>Gagné's nine events, Merrill's five principles, ASSURE.</li>
+            <li>Mayer's multimedia principles, cognitive load, and the three UDL principles.</li>
+            <li>Community of Inquiry: cognitive, social and teaching presence.</li>
+            <li>Kirkpatrick's four levels; Quality Matters and OSCQR.</li>
+            <li>Emerging trends: AI (uses and ethics), adaptive learning, gamification, micro-credentials.</li>
+          </ul>
+
+          <h3 class="section-title">How to Use These Notes</h3>
+          <ul>
+            <li>Read each topic from the overview to the end; take time with the examples.</li>
+            <li>Attempt the 15 scenario-based MCQs before looking at the ticks, then check your understanding.</li>
+            <li>Finish with "What I Must Remember for the Exam" and repeat it until you can explain each point without looking.</li>
+            <li>Practise comparing models and theories in tables; "compare" questions are very common.</li>
+            <li>Link every concept to an example from your own school, college or workplace.</li>
+          </ul>
+        </div>
+      </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOPIC 1: INTRO TO ID                       -->
+    <!-- ========================================== -->
+    <div id="module-topic1" class="module-wrapper">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t1-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t1-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t1-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 1: Introduction to Instructional Design</h2>
+            <p><strong>Week 1 | Definitions, the designer's role, systematic vs. systemic approaches, contexts</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>Imagine a teacher who wants students to understand how a computer network works. One way is to walk into class and simply talk. Another way is to first find out what students already know, decide exactly what they should be able to do at the end, choose activities and tools that help them reach that goal, and then check whether it worked. The second way is instructional design (ID).</p>
+            <p>Instructional design is the planned, step-by-step way of creating teaching and learning experiences so that learners actually learn what they are supposed to learn. It is the foundation of the whole MED-MIT course: every later topic (theories, models, objectives, assessment, media, online courses, evaluation) is a part of this big idea.</p>
+
+            <h3 class="section-title">1. Basic Definitions</h3>
+            <div class="alert-box">
+              <strong>Instruction</strong> is the deliberate arrangement of information, activities and resources to help someone learn.<br><br>
+              <strong>Instructional design</strong> is the systematic process of analysing learning needs, designing and developing instruction to meet those needs, and evaluating whether it worked.<br><br>
+              <strong>Instructional technology</strong> is the use of tools (computers, software, mobile phones, projectors, learning platforms) to support teaching and learning.
+            </div>
+            <p>Do not confuse teaching with instructional design. Teaching is what happens when the teacher and learners interact. Instructional design is the planning and preparation behind it. A good lesson is usually the result of good design.</p>
+            <div class="info-box">
+              <strong>Example:</strong> A lecturer who prepares a Moodle module on "Introduction to Databases" (with objectives, readings, a video, a quiz and a discussion forum) is doing instructional design. Delivering the lecture live is teaching.
+            </div>
+
+            <h3 class="section-title">2. Why Instructional Design Matters</h3>
+            <ul>
+              <li><strong>Effectiveness:</strong> learners actually achieve the intended outcomes.</li>
+              <li><strong>Efficiency:</strong> time, money and effort are not wasted on unnecessary content.</li>
+              <li><strong>Appeal (engagement):</strong> learners stay motivated.</li>
+              <li><strong>Consistency:</strong> many teachers can deliver the same quality of instruction.</li>
+              <li><strong>Accountability:</strong> results can be measured and improved.</li>
+            </ul>
+            <div class="alert-box"><strong>Key Point:</strong> Good instruction is often described by three words: effective, efficient and engaging.</div>
+
+            <h3 class="section-title">3. The Role of the Instructional Designer</h3>
+            <p>An instructional designer is the person who applies ID principles to build learning experiences. In practice the role is wide:</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Role</th>
+                    <th>What the designer does</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Analyst</td><td>Finds the problem, studies learners and context</td></tr>
+                  <tr><td>Learning architect</td><td>Writes objectives and plans the structure of the course</td></tr>
+                  <tr><td>Content developer</td><td>Creates or organises notes, videos, quizzes, activities</td></tr>
+                  <tr><td>Technology integrator</td><td>Chooses tools such as an LMS, H5P or Articulate</td></tr>
+                  <tr><td>Evaluator</td><td>Collects feedback and data and improves the design</td></tr>
+                  <tr><td>Project manager / collaborator</td><td>Works with subject-matter experts (SMEs), teachers, graphic designers and IT staff</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="info-box">
+              <strong>Example:</strong> A university wants to move a face-to-face course online. The designer meets the subject expert, studies the students' internet access, rewrites the objectives for online study, builds the Moodle pages, and plans how to test the course.
+            </div>
+
+            <h3 class="section-title">4. Systematic vs. Systemic Approaches</h3>
+            <p>These two words look alike but mean different things, and they are a common exam question.</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Feature</th>
+                    <th>Systematic</th>
+                    <th>Systemic</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Meaning</strong></td>
+                    <td>Following an orderly, step-by-step procedure</td>
+                    <td>Looking at the whole system and how its parts affect one another</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Focus</strong></td>
+                    <td>The process (do step 1, then 2, then 3)</td>
+                    <td>The environment and connections (school, learners, policy, resources)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Question asked</strong></td>
+                    <td>"Have we followed the steps in order?"</td>
+                    <td>"How will this design work within the whole organisation?"</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Example</strong></td>
+                    <td>Following ADDIE phase by phase</td>
+                    <td>Considering how a new e-learning course affects timetable, staff workload and internet cost</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert-box"><strong>Key Point:</strong> ID is both systematic (ordered steps) and systemic (every part is linked, and a change in one part affects the others).</div>
+
+            <h3 class="section-title">5. Instructional Design in Different Contexts</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Context</th>
+                    <th>Typical focus</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>K-12 (basic and secondary schools)</td><td>Curriculum-based lessons, classroom activities, learner engagement</td><td>A teacher uses a simulation to teach photosynthesis</td></tr>
+                  <tr><td>Higher education</td><td>Courses, blended and online programmes, research-based learning</td><td>A Moodle course for a Master's class</td></tr>
+                  <tr><td>Corporate / workplace</td><td>Job performance, short training, compliance, return on investment</td><td>A bank trains staff on a new mobile banking system</td></tr>
+                  <tr><td>Health professions</td><td>Clinical skills, safety, simulation, continuing education</td><td>Online modules and simulations for nurses</td></tr>
+                  <tr><td>Non-formal / community</td><td>Skills for adults and communities</td><td>A radio and WhatsApp literacy programme for farmers</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">6. Brief Foundations of the Field</h3>
+            <ul>
+              <li>During the Second World War, the military needed to train many people quickly. Psychologists and educators designed systematic training, which began modern ID.</li>
+              <li>Robert Gagné, Robert Mager, Benjamin Bloom and others shaped objectives, learning conditions and taxonomies.</li>
+              <li>ADDIE and similar models grew from this and became the standard in education and training.</li>
+              <li>Today, computers, the internet, mobile learning and AI have expanded the field into e-learning and digital transformation.</li>
+            </ul>
+
+            <h3 class="section-title">7. Common Misunderstandings</h3>
+            <ul>
+              <li>ID is not just making PowerPoint slides.</li>
+              <li>ID is not only for online courses; it applies to any teaching.</li>
+              <li>Technology is not the goal. Learning is the goal; technology is a means.</li>
+              <li>A beautiful course that does not help learners achieve the objectives is poorly designed.</li>
+            </ul>
+
+            <div class="alert-box">
+              <strong>What I Must Remember for the Exam</strong><br><br>
+              • Instructional design = the systematic process of analysing needs, designing, developing, implementing and evaluating instruction.<br>
+              • Good instruction is effective, efficient and engaging.<br>
+              • Systematic = step-by-step procedure; systemic = the whole system and its connected parts.<br>
+              • Teaching is delivery; ID is the planning behind it. Technology is a tool, not the goal.<br>
+              • Designer roles: analyst, learning architect, content developer, technology integrator, evaluator, collaborator.<br>
+              • ID is applied in K-12, higher education, corporate and health professions, and non-formal settings.<br>
+              • ID grew from wartime training needs and the work of Gagné, Mager, Bloom and others.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t1-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+            <p>Each question is a realistic scenario. Choose the best answer; several options may look reasonable, so justify your choice.</p>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A head teacher says: "Our students fail ICT because teachers lecture badly, so send everyone to a lecture-skills workshop." As the instructional designer, what is the most defensible first step?</p>
+              <button class="option-btn" onclick="checkScenario('t1q1', 'A')">A. Buy projectors so lectures become more engaging</button>
+              <button class="option-btn" onclick="checkScenario('t1q1', 'B')">B. Redesign the end-of-term examination</button>
+              <button class="option-btn" onclick="checkScenario('t1q1', 'C')">C. Book the workshop, since the cause has already been identified</button>
+              <button class="option-btn" onclick="checkScenario('t1q1', 'D')">D. Analyse the performance gap and its causes before choosing any solution</button>
+              <div id="feedback-t1q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>A polytechnic introduces a new LMS. Tutor workload rises, timetables clash and students' data costs increase. A designer who analyses all these linked effects is mainly thinking</p>
+              <button class="option-btn" onclick="checkScenario('t1q2', 'A')">A. systemically, by considering how the parts of the whole organisation affect one another</button>
+              <button class="option-btn" onclick="checkScenario('t1q2', 'B')">B. only about the technology itself</button>
+              <button class="option-btn" onclick="checkScenario('t1q2', 'C')">C. purely in behaviourist terms</button>
+              <button class="option-btn" onclick="checkScenario('t1q2', 'D')">D. only systematically, by following ordered steps</button>
+              <div id="feedback-t1q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>Lecturer X delivers excellent lectures but never writes objectives or plans assessment. Lecturer Y spends weeks before the semester aligning objectives, activities, assessments and feedback. Which statement is most accurate?</p>
+              <button class="option-btn" onclick="checkScenario('t1q3', 'A')">A. X has done instructional design because delivery is its core</button>
+              <button class="option-btn" onclick="checkScenario('t1q3', 'B')">B. Both have done instructional design, since all teaching is design</button>
+              <button class="option-btn" onclick="checkScenario('t1q3', 'C')">C. Y has done instructional design; X has demonstrated teaching skill but not necessarily design</button>
+              <button class="option-btn" onclick="checkScenario('t1q3', 'D')">D. Neither, because instructional design requires software</button>
+              <div id="feedback-t1q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>A rural school receives 40 donated laptops and the head insists they be used in every lesson "to modernise learning". Which critique best reflects ID principles?</p>
+              <button class="option-btn" onclick="checkScenario('t1q4', 'A')">A. Laptops are unsuitable for rural schools regardless of need</button>
+              <button class="option-btn" onclick="checkScenario('t1q4', 'B')">B. Using laptops in every lesson guarantees engagement and therefore learning</button>
+              <button class="option-btn" onclick="checkScenario('t1q4', 'C')">C. The school should wait for a national policy before using them</button>
+              <button class="option-btn" onclick="checkScenario('t1q4', 'D')">D. Technology is being treated as the goal; learning needs and outcomes should drive when and how it is used</button>
+              <div id="feedback-t1q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>A bank and a primary school both use ID. Which contrast in emphasis is most accurate?</p>
+              <button class="option-btn" onclick="checkScenario('t1q5', 'A')">A. Banks use ID without assessment, whereas schools use assessment only</button>
+              <button class="option-btn" onclick="checkScenario('t1q5', 'B')">B. Banks design for learners, schools design for teachers</button>
+              <button class="option-btn" onclick="checkScenario('t1q5', 'C')">C. Schools use systemic design while banks use only systematic design</button>
+              <button class="option-btn" onclick="checkScenario('t1q5', 'D')">D. Banks focus on job performance and return on investment; schools focus on curriculum-based learning outcomes</button>
+              <div id="feedback-t1q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>A subject-matter expert (SME) argues that a designer is unnecessary because "I know the content better than anyone". Which response is most professionally sound?</p>
+              <button class="option-btn" onclick="checkScenario('t1q6', 'A')">A. The designer contributes needs and learner analysis, strategies and alignment of objectives with assessment, which content expertise alone does not guarantee</button>
+              <button class="option-btn" onclick="checkScenario('t1q6', 'B')">B. Limit the designer to choosing fonts and colours</button>
+              <button class="option-btn" onclick="checkScenario('t1q6', 'C')">C. Replace the SME with a more junior expert</button>
+              <button class="option-btn" onclick="checkScenario('t1q6', 'D')">D. Agree, because content knowledge ensures effective instruction</button>
+              <div id="feedback-t1q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A course is delivered flawlessly and learners rate it highly, yet exam performance does not improve. Which of the "three qualities" of good instruction is most clearly lacking?</p>
+              <button class="option-btn" onclick="checkScenario('t1q7', 'A')">A. Efficiency</button>
+              <button class="option-btn" onclick="checkScenario('t1q7', 'B')">B. Effectiveness</button>
+              <button class="option-btn" onclick="checkScenario('t1q7', 'C')">C. None; all three are met if learners are satisfied</button>
+              <button class="option-btn" onclick="checkScenario('t1q7', 'D')">D. Engagement</button>
+              <div id="feedback-t1q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>A designer follows every ADDIE step in sequence for an online course but never checks whether learners have electricity, data or devices. The weakness is that the design is</p>
+              <button class="option-btn" onclick="checkScenario('t1q8', 'A')">A. systematic but not systemic</button>
+              <button class="option-btn" onclick="checkScenario('t1q8', 'B')">B. too systemic</button>
+              <button class="option-btn" onclick="checkScenario('t1q8', 'C')">C. not systematic at all</button>
+              <button class="option-btn" onclick="checkScenario('t1q8', 'D')">D. based on the wrong learning theory</button>
+              <div id="feedback-t1q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>After a pilot, a designer compiles learner feedback and quiz data, finds that Module 3 confuses learners, and recommends revising it. Which role is she mainly performing?</p>
+              <button class="option-btn" onclick="checkScenario('t1q9', 'A')">A. Evaluator</button>
+              <button class="option-btn" onclick="checkScenario('t1q9', 'B')">B. Technology integrator</button>
+              <button class="option-btn" onclick="checkScenario('t1q9', 'C')">C. Learning architect</button>
+              <button class="option-btn" onclick="checkScenario('t1q9', 'D')">D. Content developer</button>
+              <div id="feedback-t1q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>A ministry wants nurses trained in infection control. Nurses work shifts, have limited internet and need hands-on practice. Which design is most defensible?</p>
+              <button class="option-btn" onclick="checkScenario('t1q10', 'A')">A. Short mobile micro-modules combined with supervised ward-based practice</button>
+              <button class="option-btn" onclick="checkScenario('t1q10', 'B')">B. Long streamed video lectures with an online exam</button>
+              <button class="option-btn" onclick="checkScenario('t1q10', 'C')">C. A three-day residential lecture series in the capital</button>
+              <button class="option-btn" onclick="checkScenario('t1q10', 'D')">D. A reading list and a final written test</button>
+              <div id="feedback-t1q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>A colleague claims: "Instructional design is basically making attractive PowerPoint slides." Which reply is most accurate?</p>
+              <button class="option-btn" onclick="checkScenario('t1q11', 'A')">A. Incorrect; ID concerns only the writing of examinations</button>
+              <button class="option-btn" onclick="checkScenario('t1q11', 'B')">B. Correct, but only for online courses</button>
+              <button class="option-btn" onclick="checkScenario('t1q11', 'C')">C. Incorrect; slides are one possible output of a process that includes analysis, objectives, assessment, strategy choice and evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t1q11', 'D')">D. Correct, because visual materials are the main product of ID</button>
+              <div id="feedback-t1q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>Midway through an ID project the curriculum changes, affecting objectives, assessments and activities. What does this best illustrate?</p>
+              <button class="option-btn" onclick="checkScenario('t1q12', 'A')">A. That ordered procedures should be abandoned in practice</button>
+              <button class="option-btn" onclick="checkScenario('t1q12', 'B')">B. That the parts of a design are interrelated, so a change in one requires revisiting others</button>
+              <button class="option-btn" onclick="checkScenario('t1q12', 'C')">C. That ID applies only to stable content</button>
+              <button class="option-btn" onclick="checkScenario('t1q12', 'D')">D. That stakeholders should not be consulted during design</button>
+              <div id="feedback-t1q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>Which statement best explains why ID emerged as a discipline?</p>
+              <button class="option-btn" onclick="checkScenario('t1q13', 'A')">A. Universities wanted to replace lecturers with software</button>
+              <button class="option-btn" onclick="checkScenario('t1q13', 'B')">B. Governments required every teacher to hold a design certificate</button>
+              <button class="option-btn" onclick="checkScenario('t1q13', 'C')">C. Computers became cheap enough for schools</button>
+              <button class="option-btn" onclick="checkScenario('t1q13', 'D')">D. Large-scale wartime training needed to be effective, quick and consistent, which led psychologists and educators to design training systematically</button>
+              <div id="feedback-t1q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>A director must decide whether to commission a designer or simply buy a ready-made course. Which argument most strongly supports commissioning design?</p>
+              <button class="option-btn" onclick="checkScenario('t1q14', 'A')">A. It matches instruction to the specific learners, context and objectives and allows evidence-based improvement</button>
+              <button class="option-btn" onclick="checkScenario('t1q14', 'B')">B. It is always cheaper than a ready-made course</button>
+              <button class="option-btn" onclick="checkScenario('t1q14', 'C')">C. Ready-made courses never produce learning</button>
+              <button class="option-btn" onclick="checkScenario('t1q14', 'D')">D. It removes the need for any evaluation</button>
+              <div id="feedback-t1q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>A school identifies three problems: learners cannot type, there are too few computers, and teachers are demotivated by delayed allowances. Which conclusion is most defensible?</p>
+              <button class="option-btn" onclick="checkScenario('t1q15', 'A')">A. A typing course will solve all three problems</button>
+              <button class="option-btn" onclick="checkScenario('t1q15', 'B')">B. Only the typing gap is clearly addressable by instruction; the others require resources and management action</button>
+              <button class="option-btn" onclick="checkScenario('t1q15', 'C')">C. Instruction can solve none of the problems</button>
+              <button class="option-btn" onclick="checkScenario('t1q15', 'D')">D. All three are skills gaps that training will fix</button>
+              <div id="feedback-t1q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOPIC 2: FOUNDATIONS (THEORIES)            -->
+    <!-- ========================================== -->
+    <div id="module-topic2" class="module-wrapper">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t2-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t2-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t2-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 2: Foundations: Learning Theories and Instructional Design</h2>
+            <p><strong>Week 2 | Behaviourism, cognitivism, constructivism, connectivism, memory and learning</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>A learning theory is an explanation of how people learn. Instructional designers need these theories because the way you believe learning happens decides how you design instruction. If you believe learning is remembering facts, you will design drills. If you believe learning is building understanding with others, you will design projects and discussions.</p>
+            <p>Four major theories are examined in this course: behaviourism, cognitivism, constructivism and connectivism. Each one adds a useful lens. A good designer does not fight over which is "right" but selects the one that suits the type of learning needed.</p>
+
+            <h3 class="section-title">1. Behaviourism</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> Behaviourism views learning as a change in observable behaviour caused by stimuli in the environment and the consequences that follow.
+            </div>
+            <ul>
+              <li><strong>Key thinkers:</strong> Pavlov (classical conditioning), Thorndike (law of effect), Skinner (operant conditioning).</li>
+              <li>The learner is seen as passive: the environment shapes the learner.</li>
+              <li><strong>Main ideas:</strong> stimulus-response, reinforcement (increases behaviour), punishment (reduces behaviour), practice and repetition, immediate feedback.</li>
+            </ul>
+            <p><strong>Implications for design:</strong> Break content into small steps and give clear, measurable objectives. Give immediate feedback and rewards (marks, badges, praise). Use drill and practice for basic skills such as multiplication tables, typing and spelling.</p>
+            <div class="info-box"><strong>Example:</strong> A typing-tutor app shows a letter, the learner types it, and the app instantly says "Correct!" and gives points. This is behaviourist design.</div>
+
+            <h3 class="section-title">2. Cognitivism</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> Cognitivism views learning as an internal mental process: receiving, organising, storing and retrieving information in the mind.
+            </div>
+            <ul>
+              <li><strong>Key thinkers:</strong> Piaget (cognitive development), Bruner, Ausubel (meaningful learning and advance organisers), Gagné (information processing), Sweller (cognitive load).</li>
+              <li>The learner is an active processor of information. The mind is compared to a computer: input, processing, storage and output.</li>
+              <li><strong>Main ideas:</strong> attention, memory, prior knowledge, organisation of information, cognitive load.</li>
+            </ul>
+            <p><strong>Implications for design:</strong> Gain attention, link new content to what learners already know. Organise content logically (simple to complex) and use diagrams, outlines and concept maps. Avoid overloading learners with too much information at once. Provide practice that helps move information into long-term memory.</p>
+            <div class="info-box"><strong>Example:</strong> Before teaching "relational databases", a lecturer first reviews spreadsheets (which learners know), then shows a diagram of linked tables. This builds on prior knowledge.</div>
+
+            <h3 class="section-title">3. Constructivism</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> Constructivism views learning as an active process in which learners build their own knowledge and meaning from experience and interaction.
+            </div>
+            <ul>
+              <li><strong>Key thinkers:</strong> Piaget (individual construction), Vygotsky (social construction), Dewey and Bruner.</li>
+              <li><strong>Vygotsky's Zone of Proximal Development (ZPD):</strong> the gap between what a learner can do alone and what they can do with help. The help given is called scaffolding.</li>
+              <li>The teacher is a facilitator or guide; the learner is active and responsible.</li>
+              <li>Learning is best when tasks are real, meaningful and collaborative.</li>
+            </ul>
+            <p><strong>Implications for design:</strong> Use problem-based learning, projects, case studies and group work. Use authentic tasks that look like real life. Encourage reflection, discussion and peer learning.</p>
+            <div class="info-box"><strong>Example:</strong> Student teachers work in groups to design a lesson for a real school, discuss on an online forum, and revise their lesson after feedback. They are constructing knowledge together.</div>
+
+            <h3 class="section-title">4. Connectivism</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> Connectivism (Siemens, Downes) views learning as the ability to build and move through networks of people, information and technology in the digital age.
+            </div>
+            <ul>
+              <li>Knowledge lives in networks (websites, databases, communities, social media), not only in one person's head.</li>
+              <li>"Knowing where to find information" can be as important as knowing the information itself.</li>
+              <li>Learning includes forming and maintaining connections; information changes quickly so currency (being up to date) is vital.</li>
+            </ul>
+            <p><strong>Implications for design:</strong> Use blogs, wikis, social networks, MOOCs, open educational resources and professional learning networks. Teach digital literacy: searching, filtering and judging information. Encourage learners to curate and share resources.</p>
+            <div class="info-box"><strong>Example:</strong> A teacher joins a WhatsApp/LinkedIn community of ICT teachers across Africa, follows experts, shares resources and solves classroom problems with the group. That is connectivist learning.</div>
+
+            <h3 class="section-title">5. Comparing the Four Theories</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Behaviourism</th>
+                    <th>Cognitivism</th>
+                    <th>Constructivism</th>
+                    <th>Connectivism</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Learning is</strong></td>
+                    <td>Change in behaviour</td>
+                    <td>Mental processing</td>
+                    <td>Building meaning</td>
+                    <td>Forming network connections</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Learner is</strong></td>
+                    <td>Passive responder</td>
+                    <td>Active processor</td>
+                    <td>Active constructor</td>
+                    <td>Active network participant</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Teacher is</strong></td>
+                    <td>Controller/trainer</td>
+                    <td>Organiser of information</td>
+                    <td>Facilitator</td>
+                    <td>Guide/network co-learner</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Typical activity</strong></td>
+                    <td>Drill, quiz, reward</td>
+                    <td>Diagrams, organisers, chunking</td>
+                    <td>Projects, case studies</td>
+                    <td>Blogs, MOOCs, communities</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Best for</strong></td>
+                    <td>Basic facts and skills</td>
+                    <td>Concepts, memory, problem-solving</td>
+                    <td>Complex, real-world problems</td>
+                    <td>Fast-changing digital knowledge</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">6. Memory and Learning</h3>
+            <p>The information-processing model explains how information moves through memory:</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Stage</th>
+                    <th>Description</th>
+                    <th>Design tip</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Sensory memory</strong></td>
+                    <td>Very brief (seconds) store for what we see and hear</td>
+                    <td>Gain attention; make important points stand out</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Working (short-term) memory</strong></td>
+                    <td>Holds a small amount of information (about 4-7 items) for a short time while we think</td>
+                    <td>Chunk information; avoid overload</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Long-term memory</strong></td>
+                    <td>Large, lasting store organised in schemas (mental structures)</td>
+                    <td>Link to prior knowledge; use practice, review and spacing</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li><strong>Cognitive load</strong> is the mental effort used in working memory. Good design reduces unnecessary load.</li>
+              <li><strong>Schema:</strong> an organised mental framework (for example, your idea of what a "classroom" is).</li>
+              <li><strong>Transfer:</strong> applying what is learned in a new situation, the real aim of instruction.</li>
+            </ul>
+            <div class="alert-box"><strong>Key Point:</strong> No single theory is best. A skilled designer matches the theory to the learning goal: behaviourism for basic skills, cognitivism for understanding concepts, constructivism for complex tasks, connectivism for networked, changing knowledge.</div>
+
+            <div class="alert-box">
+              <strong>What I Must Remember for the Exam</strong><br><br>
+              • Behaviourism: observable behaviour, stimulus-response, reinforcement, drill and feedback (Pavlov, Thorndike, Skinner).<br>
+              • Cognitivism: mental processing, memory, prior knowledge, cognitive load (Piaget, Bruner, Ausubel, Gagné, Sweller).<br>
+              • Constructivism: learners build knowledge; ZPD and scaffolding (Vygotsky); projects and collaboration.<br>
+              • Connectivism: learning in networks; digital age (Siemens, Downes).<br>
+              • Memory stages: sensory, working (limited), long-term (schemas). Reduce cognitive load.<br>
+              • Match the theory to the learning goal; no single theory is best.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t2-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A teacher wants Basic 7 pupils to master multiplication facts quickly and accurately. Which design is most consistent with a behaviourist approach?</p>
+              <button class="option-btn" onclick="checkScenario('t2q1', 'A')">A. Short timed practice sets with immediate correct/incorrect feedback and reinforcement</button>
+              <button class="option-btn" onclick="checkScenario('t2q1', 'B')">B. An open-ended group inquiry on the history of numbers</button>
+              <button class="option-btn" onclick="checkScenario('t2q1', 'C')">C. A discussion forum on how pupils feel about mathematics</button>
+              <button class="option-btn" onclick="checkScenario('t2q1', 'D')">D. Independent browsing of maths websites</button>
+              <div id="feedback-t2q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>A lecturer begins a database lesson by reviewing spreadsheets that learners already use, then shows linked tables in a diagram. Which concept is mainly being applied?</p>
+              <button class="option-btn" onclick="checkScenario('t2q2', 'A')">A. Connectivist network formation</button>
+              <button class="option-btn" onclick="checkScenario('t2q2', 'B')">B. Activating prior knowledge to build new schemas</button>
+              <button class="option-btn" onclick="checkScenario('t2q2', 'C')">C. Reinforcement schedules</button>
+              <button class="option-btn" onclick="checkScenario('t2q2', 'D')">D. Operant conditioning</button>
+              <div id="feedback-t2q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>Student teachers must design a lesson for a real school, discuss drafts online and revise after peer feedback. Which learning theory most strongly underpins this design?</p>
+              <button class="option-btn" onclick="checkScenario('t2q3', 'A')">A. Constructivism</button>
+              <button class="option-btn" onclick="checkScenario('t2q3', 'B')">B. Behaviourism</button>
+              <button class="option-btn" onclick="checkScenario('t2q3', 'C')">C. Cognitivism</button>
+              <button class="option-btn" onclick="checkScenario('t2q3', 'D')">D. Classical conditioning</button>
+              <div id="feedback-t2q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>A designer says: "Learners cannot complete this task alone, but they can with guided prompts and hints that are gradually removed." Which concept is being described?</p>
+              <button class="option-btn" onclick="checkScenario('t2q4', 'A')">A. Cognitive overload</button>
+              <button class="option-btn" onclick="checkScenario('t2q4', 'B')">B. Scaffolding within the zone of proximal development</button>
+              <button class="option-btn" onclick="checkScenario('t2q4', 'C')">C. Schema transfer</button>
+              <button class="option-btn" onclick="checkScenario('t2q4', 'D')">D. Operant extinction</button>
+              <div id="feedback-t2q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>A slide shows 150 words, three fonts, animation and music. Learners cannot recall the key idea afterwards. Which explanation is most consistent with cognitive theory?</p>
+              <button class="option-btn" onclick="checkScenario('t2q5', 'A')">A. Working memory was overloaded by unnecessary information</button>
+              <button class="option-btn" onclick="checkScenario('t2q5', 'B')">B. Learners were not rewarded sufficiently</button>
+              <button class="option-btn" onclick="checkScenario('t2q5', 'C')">C. Long-term memory is too small to store slide content</button>
+              <button class="option-btn" onclick="checkScenario('t2q5', 'D')">D. Learners had not formed a professional network</button>
+              <div id="feedback-t2q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>A teacher in Accra joins a continental community of ICT teachers, follows experts and curates resources to solve classroom problems. Which theory best explains the value of this activity?</p>
+              <button class="option-btn" onclick="checkScenario('t2q6', 'A')">A. Connectivism</button>
+              <button class="option-btn" onclick="checkScenario('t2q6', 'B')">B. Behaviourism</button>
+              <button class="option-btn" onclick="checkScenario('t2q6', 'C')">C. Programmed instruction</button>
+              <button class="option-btn" onclick="checkScenario('t2q6', 'D')">D. Information-processing theory only</button>
+              <div id="feedback-t2q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A designer must teach (a) keyboard shortcuts, (b) how to plan a research methodology and (c) how to evaluate fast-changing online sources. Which matching of approaches is most appropriate?</p>
+              <button class="option-btn" onclick="checkScenario('t2q7', 'A')">A. (a) drill and feedback, (b) guided projects and discussion, (c) networked, curated learning with digital literacy practice</button>
+              <button class="option-btn" onclick="checkScenario('t2q7', 'B')">B. All three through drill and practice</button>
+              <button class="option-btn" onclick="checkScenario('t2q7', 'C')">C. (a) discussion, (b) drill, (c) memorisation</button>
+              <button class="option-btn" onclick="checkScenario('t2q7', 'D')">D. All three through lecture followed by a test</button>
+              <div id="feedback-t2q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>A trainer rewards every correct answer with points but learners cannot apply skills to real tasks. Which limitation of the approach is most evident?</p>
+              <button class="option-btn" onclick="checkScenario('t2q8', 'A')">A. Behaviourist methods may build isolated responses without deeper understanding or transfer</button>
+              <button class="option-btn" onclick="checkScenario('t2q8', 'B')">B. Feedback should never be immediate</button>
+              <button class="option-btn" onclick="checkScenario('t2q8', 'C')">C. Points are only effective with adults</button>
+              <button class="option-btn" onclick="checkScenario('t2q8', 'D')">D. Rewards always reduce performance</button>
+              <div id="feedback-t2q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>Which design decision best shows an understanding of the limits of working memory?</p>
+              <button class="option-btn" onclick="checkScenario('t2q9', 'A')">A. Adding more decorative graphics to keep attention</button>
+              <button class="option-btn" onclick="checkScenario('t2q9', 'B')">B. Playing background music to keep learners alert</button>
+              <button class="option-btn" onclick="checkScenario('t2q9', 'C')">C. Placing the whole procedure on one screen so learners can see everything</button>
+              <button class="option-btn" onclick="checkScenario('t2q9', 'D')">D. Presenting a complex procedure in short segments, with a worked example before independent practice</button>
+              <div id="feedback-t2q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>A constructivist critic says a purely lecture-based online module is weak for a complex-problem course. Which improvement best answers the critique?</p>
+              <button class="option-btn" onclick="checkScenario('t2q10', 'A')">A. Increase lecture length so more content is covered</button>
+              <button class="option-btn" onclick="checkScenario('t2q10', 'B')">B. Add authentic case problems with collaborative discussion and facilitator scaffolding</button>
+              <button class="option-btn" onclick="checkScenario('t2q10', 'C')">C. Remove all feedback to encourage independence</button>
+              <button class="option-btn" onclick="checkScenario('t2q10', 'D')">D. Add more multiple-choice recall quizzes</button>
+              <div id="feedback-t2q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>A learner says: "I know where to look and whom to ask, but I cannot recall the facts myself." Which theory would regard this ability as a legitimate form of learning, and why?</p>
+              <button class="option-btn" onclick="checkScenario('t2q11', 'A')">A. Behaviourism, because any response counts as learning</button>
+              <button class="option-btn" onclick="checkScenario('t2q11', 'B')">B. None; all theories require memorisation</button>
+              <button class="option-btn" onclick="checkScenario('t2q11', 'C')">C. Cognitivism, because retrieval from memory is the only valid evidence</button>
+              <button class="option-btn" onclick="checkScenario('t2q11', 'D')">D. Connectivism, because the capacity to find and use knowledge in networks is valued</button>
+              <div id="feedback-t2q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>Two designers disagree: one says "behaviourism is outdated and should never be used"; the other says "use it for everything". Which position is most defensible at Master's level?</p>
+              <button class="option-btn" onclick="checkScenario('t2q12', 'A')">A. Neither; the theory should be matched to the type of learning outcome, so behaviourist methods suit some basic skills and not complex problem-solving</button>
+              <button class="option-btn" onclick="checkScenario('t2q12', 'B')">B. The second, because behaviourism is the only measurable theory</button>
+              <button class="option-btn" onclick="checkScenario('t2q12', 'C')">C. The first, because modern theories replace earlier ones entirely</button>
+              <button class="option-btn" onclick="checkScenario('t2q12', 'D')">D. Neither theory should influence design</button>
+              <div id="feedback-t2q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>A designer wants learners to transfer knowledge to new situations rather than only repeat it. Which design feature best supports transfer?</p>
+              <button class="option-btn" onclick="checkScenario('t2q13', 'A')">A. Varied practice in different contexts, with reflection on underlying principles</button>
+              <button class="option-btn" onclick="checkScenario('t2q13', 'B')">B. Giving answers before learners attempt problems</button>
+              <button class="option-btn" onclick="checkScenario('t2q13', 'C')">C. Repeating the same example many times</button>
+              <button class="option-btn" onclick="checkScenario('t2q13', 'D')">D. Testing only with the same questions used in teaching</button>
+              <div id="feedback-t2q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>In an online course, a facilitator replies "Your answer is wrong" to every incorrect post and nothing more. Which improvement fits constructivist and cognitive thinking?</p>
+              <button class="option-btn" onclick="checkScenario('t2q14', 'A')">A. Award participation points regardless of quality</button>
+              <button class="option-btn" onclick="checkScenario('t2q14', 'B')">B. Give feedback that asks probing questions and links to learners' prior knowledge so they can revise their thinking</button>
+              <button class="option-btn" onclick="checkScenario('t2q14', 'C')">C. Replace discussion with a quiz</button>
+              <button class="option-btn" onclick="checkScenario('t2q14', 'D')">D. Delete incorrect posts to protect other learners</button>
+              <div id="feedback-t2q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>A team must choose a theoretical basis for a programme that prepares teachers to integrate AI tools, a field changing monthly. Which choice is most justifiable?</p>
+              <button class="option-btn" onclick="checkScenario('t2q15', 'A')">A. A combined approach emphasising constructivist problem-solving and connectivist networks, supported by cognitive load management</button>
+              <button class="option-btn" onclick="checkScenario('t2q15', 'B')">B. A fixed textbook of AI tools to memorise</button>
+              <button class="option-btn" onclick="checkScenario('t2q15', 'C')">C. Purely behaviourist drills on current tools</button>
+              <button class="option-btn" onclick="checkScenario('t2q15', 'D')">D. Avoiding theory and relying on tool tutorials</button>
+              <div id="feedback-t2q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+  </div> <!-- End App Layout -->
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="max-width: 1100px; margin: 0 auto;">
+      &copy; 2026 Prinesther Educational Consult | Instructional Design Module
+    </div>
+  </footer>
+
+  <script>
+    // Module Switcher for Top-Right Dropdown
+    function switchModule(moduleId) {
+      document.querySelectorAll('.module-wrapper').forEach(el => el.classList.remove('active'));
+      document.getElementById(moduleId).classList.add('active');
+    }
+
+    // Sub-Tab Switcher
+    function switchTab(tabId, btnElement) {
+      const activeModule = btnElement.closest('.module-wrapper');
+      
+      activeModule.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      activeModule.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      btnElement.classList.add('active');
+    }
+
+    // Interactive Knowledge Check Answers (Topic 1 & 2)
+    const scenarioAnswers = {
+      // Topic 1
+      't1q1': { correct: 'D', text: "Correct! Analyse the performance gap and its causes before choosing any solution." },
+      't1q2': { correct: 'A', text: "Correct! Thinking systemically means considering how the parts of the whole organisation affect one another." },
+      't1q3': { correct: 'C', text: "Correct! Y has done instructional design; X has demonstrated teaching skill but not necessarily design." },
+      't1q4': { correct: 'D', text: "Correct! Technology is being treated as the goal; learning needs and outcomes should drive when and how it is used." },
+      't1q5': { correct: 'D', text: "Correct! Banks focus on job performance and ROI; schools focus on curriculum-based learning outcomes." },
+      't1q6': { correct: 'A', text: "Correct! The designer contributes needs and learner analysis, strategies and alignment of objectives with assessment." },
+      't1q7': { correct: 'B', text: "Correct! Effectiveness means learners actually achieve the intended outcomes." },
+      't1q8': { correct: 'A', text: "Correct! Following the steps rigidly without checking the environment makes it systematic but not systemic." },
+      't1q9': { correct: 'A', text: "Correct! The evaluator collects feedback and data and improves the design." },
+      't1q10': { correct: 'A', text: "Correct! Short mobile micro-modules combined with supervised ward-based practice fits the context and tasks perfectly." },
+      't1q11': { correct: 'C', text: "Correct! Slides are just one possible output of a process that includes analysis, objectives, assessment, strategy choice and evaluation." },
+      't1q12': { correct: 'B', text: "Correct! The parts of a design are interrelated, so a change in one requires revisiting others." },
+      't1q13': { correct: 'D', text: "Correct! Large-scale wartime training needed to be effective, quick and consistent, leading psychologists and educators to design training systematically." },
+      't1q14': { correct: 'A', text: "Correct! Commissioned design matches instruction to the specific learners, context and objectives and allows evidence-based improvement." },
+      't1q15': { correct: 'B', text: "Correct! Only the typing gap is clearly addressable by instruction; the others require resources and management action." },
+      
+      // Topic 2
+      't2q1': { correct: 'A', text: "Correct! Short timed practice sets with immediate correct/incorrect feedback and reinforcement aligns with Behaviorism." },
+      't2q2': { correct: 'B', text: "Correct! Activating prior knowledge to build new schemas is a core Cognitivist concept." },
+      't2q3': { correct: 'A', text: "Correct! Constructivism views learning as an active process where learners build meaning through experience and peer interaction." },
+      't2q4': { correct: 'B', text: "Correct! Scaffolding within the zone of proximal development (ZPD) is a key concept from Vygotsky." },
+      't2q5': { correct: 'A', text: "Correct! Working memory was overloaded by unnecessary information (Cognitive Load Theory)." },
+      't2q6': { correct: 'A', text: "Correct! Connectivism views learning as the ability to build and move through networks of people, information and technology." },
+      't2q7': { correct: 'A', text: "Correct! Matching the appropriate theory to the specific learning outcome is essential." },
+      't2q8': { correct: 'A', text: "Correct! Behaviourist methods may build isolated responses without deeper understanding or transfer to real tasks." },
+      't2q9': { correct: 'D', text: "Correct! Presenting complex procedures in short segments with worked examples prevents working memory overload." },
+      't2q10': { correct: 'B', text: "Correct! Adding authentic case problems with collaborative discussion and facilitator scaffolding answers the constructivist critique." },
+      't2q11': { correct: 'D', text: "Correct! Connectivism values the capacity to find and use knowledge in networks just as highly as internal recall." },
+      't2q12': { correct: 'A', text: "Correct! The theory should be matched to the type of learning outcome (e.g., behaviorism for basic skills)." },
+      't2q13': { correct: 'A', text: "Correct! Varied practice in different contexts, with reflection on underlying principles, best supports knowledge transfer." },
+      't2q14': { correct: 'B', text: "Correct! Constructivist feedback should ask probing questions and link to prior knowledge to help learners revise their thinking." },
+      't2q15': { correct: 'A', text: "Correct! A combined approach fits complex, fast-changing subjects better than relying on a single rigid theory." }
+    };
+
+    function checkScenario(qNum, selected) {
+      const box = document.getElementById(`feedback-${qNum}`);
+      const data = scenarioAnswers[qNum];
+      box.style.display = 'block';
+
+      if (selected === data.correct) {
+        box.className = 'feedback-box feedback-correct';
+        box.innerText = data.text;
+      } else {
+        box.className = 'feedback-box feedback-wrong';
+        box.innerText = "✗ Incorrect. Please review the relevant topic notes.";
+      }
+    }
+  </script>
+</body>
+</html>

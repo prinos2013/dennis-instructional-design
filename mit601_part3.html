@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIT 601 - Part 3: Design, Assessment & Strategies</title>
+  
+  <link rel="icon" href="icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icon-512.png">
+
+  <style>
+    :root {
+      --primary: #003366;
+      --primary-dark: #001f4d;
+      --primary-light: #e6f0ff;
+      --yellow: #f2a900;
+      --yellow-light: #fff8e6;
+      --red: #d90429;
+      --red-light: #ffe5e8;
+      --white: #ffffff;
+      --gray-50: #f8f9fa;
+      --gray-100: #f1f3f5;
+      --gray-200: #e9ecef;
+      --gray-700: #495057;
+      --gray-900: #212529;
+      --success: #2b9348;
+      --border-radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 20px 20px;
+      border-bottom: 6px solid var(--yellow);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo-badge {
+      width: 65px;
+      height: 65px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 3px solid var(--yellow);
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .header-text h1 {
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .motto-ribbon {
+      display: inline-block;
+      background-color: var(--yellow);
+      color: var(--primary-dark);
+      font-weight: bold;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .compiler-text {
+      color: var(--white);
+      font-size: 0.9rem;
+      margin-top: 8px;
+      font-weight: 500;
+      opacity: 0.95;
+    }
+
+    .module-dropdown {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 2px solid var(--yellow);
+      background: var(--white);
+      color: var(--primary-dark);
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 100%;
+    }
+
+    /* NAVIGATION TABS */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .nav-btn {
+      padding: 16px 18px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+    }
+
+    /* MAIN CONTENT WRAPPER */
+    .app-layout {
+      flex-grow: 1;
+    }
+
+    .module-wrapper {
+      display: none;
+    }
+
+    .module-wrapper.active {
+      display: block;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px 50px 15px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* CARDS & FORMATTING */
+    .card {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+
+    .card-title {
+      color: var(--primary);
+      font-size: 1.3rem;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title {
+      color: var(--primary-dark);
+      font-size: 1.15rem;
+      margin: 24px 0 10px 0;
+      border-left: 4px solid var(--yellow);
+      padding-left: 10px;
+    }
+
+    .alert-box {
+      background: var(--yellow-light);
+      border-left: 5px solid var(--yellow);
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      font-size: 0.95rem;
+    }
+
+    .info-box {
+      background: var(--primary-light);
+      border-left: 5px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      font-size: 0.95rem;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* SCENARIO LAB / INTERACTIVE */
+    .scenario-box {
+      border-left: 4px solid var(--primary);
+      background: var(--gray-50);
+      padding: 16px;
+      margin-bottom: 24px;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      margin: 8px 0;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+
+    .option-btn:hover {
+      background: var(--gray-100);
+      border-color: var(--primary);
+    }
+
+    .feedback-box {
+      padding: 12px 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 0.95rem;
+      display: none;
+      font-weight: 500;
+    }
+
+    .feedback-correct {
+      background: #e8f5e9;
+      color: #1b5e20;
+      border: 1px solid #a5d6a7;
+    }
+
+    .feedback-wrong {
+      background: var(--red-light);
+      color: #b71c1c;
+      border: 1px solid #ef9a9a;
+    }
+
+    /* TABLES */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      min-width: 600px;
+    }
+
+    th, td {
+      border: 1px solid var(--gray-200);
+      padding: 12px;
+      text-align: left;
+      font-size: 0.92rem;
+    }
+
+    th {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--gray-50);
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: var(--white);
+      border-top: 1px solid var(--gray-200);
+      padding: 24px 20px;
+      text-align: center;
+      color: var(--gray-700);
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="header-left">
+        <div class="logo-badge">UCC</div>
+        <div class="header-text">
+          <h1>University of Cape Coast</h1>
+          <div><span class="motto-ribbon">MIT 601: Instructional Design</span></div>
+          <div class="compiler-text">Compiled by Prince Osei (ED/ITD/25/0026)<br>Prepared by Amponsah Dennis</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <select class="module-dropdown" onchange="switchModule(this.value)">
+          <option value="module-topic6">Topic 6: Writing Learning Objectives</option>
+          <option value="module-topic7">Topic 7: Designing Assessments</option>
+          <option value="module-topic8">Topic 8: Strategies & Media Selection</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    
+    <!-- ========================================== -->
+    <!-- TOPIC 6: WRITING LEARNING OBJECTIVES       -->
+    <!-- ========================================== -->
+    <div id="module-topic6" class="module-wrapper active">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t6-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t6-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t6-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 6: Writing Learning Objectives</h2>
+            <p><strong>Week 6 | Bloom's Revised Taxonomy, Mager's approach, ABCD model, alignment with assessment</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>A learning objective says exactly what the learner will be able to do after instruction. Objectives are like a destination in a journey: without them, you cannot choose a route (activities) or know when you have arrived (assessment).</p>
+            <p>Poorly written objectives such as "Students will understand networking" are vague. Strong objectives such as "Students will be able to configure a home Wi-Fi router using the manufacturer's manual" can be observed and measured.</p>
+
+            <h3 class="section-title">1. Goals vs. Objectives</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Goal</th>
+                    <th>Objective</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Level</strong></td>
+                    <td>Broad, general</td>
+                    <td>Specific, narrow</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Time</strong></td>
+                    <td>Long term (course or programme)</td>
+                    <td>Short term (lesson or unit)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Measurable?</strong></td>
+                    <td>Not directly</td>
+                    <td>Yes</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Example</strong></td>
+                    <td>Learners will use ICT effectively in teaching</td>
+                    <td>Learners will create a 5-slide presentation using PowerPoint with at least two images</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">2. Why Objectives Matter</h3>
+            <ul>
+              <li>Guide the selection of content, strategies and media.</li>
+              <li>Tell learners what is expected.</li>
+              <li>Make assessment fair and focused.</li>
+              <li>Allow evaluation of instruction.</li>
+            </ul>
+
+            <h3 class="section-title">3. Mager's Approach (Robert Mager)</h3>
+            <p>Mager said a good objective has three components:</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Component</th>
+                    <th>Meaning</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Performance (behaviour)</strong></td>
+                    <td>What the learner will do (an action verb)</td>
+                    <td>create a spreadsheet</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Condition</strong></td>
+                    <td>Under what circumstances; what tools/help are given</td>
+                    <td>using Microsoft Excel and a sample dataset</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Criterion (standard)</strong></td>
+                    <td>How well, how fast, how accurately</td>
+                    <td>with no formula errors within 20 minutes</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="info-box">
+              <strong>Example:</strong> "Given a sample dataset and Microsoft Excel (condition), the learner will create a summary table (performance) with no formula errors within 20 minutes (criterion)."
+            </div>
+
+            <h3 class="section-title">4. The ABCD Model</h3>
+            <p>ABCD (from Heinich, Molenda and colleagues) is similar to Mager but adds the Audience:</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Element</th>
+                    <th>Letter</th>
+                    <th>Question answered</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Audience</td><td>A</td><td>Who is the learner?</td></tr>
+                  <tr><td>Behaviour</td><td>B</td><td>What will they do? (observable action verb)</td></tr>
+                  <tr><td>Condition</td><td>C</td><td>Under what conditions?</td></tr>
+                  <tr><td>Degree</td><td>D</td><td>How well? (standard)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="info-box">
+              <strong>Example:</strong> A: Form 3 students B: will identify the parts of a computer C: from a labelled diagram D: with at least 8 out of 10 correct.
+            </div>
+            <div class="alert-box">
+              <strong>Key Point:</strong> Mager = Performance, Condition, Criterion. ABCD = Audience, Behaviour, Condition, Degree. They are the same idea; ABCD simply names the audience.
+            </div>
+
+            <h3 class="section-title">5. Bloom's Taxonomy (Revised, Anderson and Krathwohl, 2001)</h3>
+            <p>Bloom's Taxonomy classifies learning into levels of thinking, from simple to complex. The revised version uses action verbs for each level instead of nouns:</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Level</th>
+                    <th>Meaning</th>
+                    <th>Sample verbs</th>
+                    <th>Example objective</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>1. Remember</strong></td>
+                    <td>Recall facts</td>
+                    <td>define, list, name, state, recall</td>
+                    <td>List four parts of the CPU</td>
+                  </tr>
+                  <tr>
+                    <td><strong>2. Understand</strong></td>
+                    <td>Explain ideas</td>
+                    <td>explain, describe, summarise, classify</td>
+                    <td>Explain how a LAN works</td>
+                  </tr>
+                  <tr>
+                    <td><strong>3. Apply</strong></td>
+                    <td>Use in new situations</td>
+                    <td>use, demonstrate, solve, carry out</td>
+                    <td>Use a LMS to upload a quiz</td>
+                  </tr>
+                  <tr>
+                    <td><strong>4. Analyse</strong></td>
+                    <td>Break into parts; find relationships</td>
+                    <td>compare, differentiate, examine, organise</td>
+                    <td>Compare ADDIE and SAM</td>
+                  </tr>
+                  <tr>
+                    <td><strong>5. Evaluate</strong></td>
+                    <td>Judge using criteria</td>
+                    <td>justify, critique, assess, defend</td>
+                    <td>Justify the choice of a model for a project</td>
+                  </tr>
+                  <tr>
+                    <td><strong>6. Create</strong></td>
+                    <td>Put parts together to make something new</td>
+                    <td>design, develop, construct, produce</td>
+                    <td>Design an online learning module</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li>The original taxonomy used nouns (Knowledge, Comprehension, Application, Analysis, Synthesis, Evaluation). In the revision, Synthesis becomes Create and is placed at the top, above Evaluate.</li>
+              <li>The revision also separates knowledge dimensions: factual, conceptual, procedural and metacognitive knowledge.</li>
+              <li>Lower-order thinking skills: remember, understand. Higher-order thinking skills: analyse, evaluate, create.</li>
+            </ul>
+            <p><strong>Verbs to avoid (not observable):</strong> know, understand, appreciate, be aware of, learn, be familiar with. These describe internal states you cannot see. Replace them with observable verbs such as "explain", "list", "demonstrate".</p>
+
+            <h3 class="section-title">6. Other Domains of Learning</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Domain</th>
+                    <th>Concerned with</th>
+                    <th>Example verbs</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Cognitive</td><td>Knowledge and thinking</td><td>explain, solve, design</td></tr>
+                  <tr><td>Affective</td><td>Attitudes, values, feelings</td><td>choose, defend, value, accept</td></tr>
+                  <tr><td>Psychomotor</td><td>Physical and manual skills</td><td>assemble, type, operate, connect</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">7. Aligning Objectives with Assessment and Activities</h3>
+            <p>Alignment means objectives, assessments and learning activities all match.</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Objective</th>
+                    <th>Matching assessment</th>
+                    <th>Matching activity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Define key ID terms</td><td>Short quiz or glossary test</td><td>Reading, flashcards</td></tr>
+                  <tr><td>Compare two ID models</td><td>Essay or comparison table</td><td>Group discussion, case study</td></tr>
+                  <tr><td>Design an online module</td><td>Project with rubric</td><td>Hands-on workshop, peer review</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert-box">
+              <strong>Key Point:</strong> If an objective says "design" but the exam only asks learners to "list", the assessment is not aligned. The verb in the objective decides the type of assessment.
+            </div>
+
+            <h3 class="section-title">8. Checklist for a Good Objective</h3>
+            <ul>
+              <li>Learner-centred: describes what the learner will do, not the teacher.</li>
+              <li>Uses an observable action verb.</li>
+              <li>States conditions where necessary.</li>
+              <li>Gives a standard of performance.</li>
+              <li>Contains one main outcome (not several mixed together).</li>
+              <li>Is realistic and relevant.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="tab-t6-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>Which objective is best written for a Form 2 ICT lesson?</p>
+              <button class="option-btn" onclick="checkScenario('t6q1', 'A')">A. The teacher will explain the parts of a computer</button>
+              <button class="option-btn" onclick="checkScenario('t6q1', 'B')">B. Given a labelled diagram, Form 2 students will identify the parts of a computer with at least 8 out of 10 correct</button>
+              <button class="option-btn" onclick="checkScenario('t6q1', 'C')">C. Students will understand the parts of a computer</button>
+              <button class="option-btn" onclick="checkScenario('t6q1', 'D')">D. Students will appreciate the importance of computers</button>
+              <div id="feedback-t6q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>An objective states: "The learner will create a pivot table." Which revision adds both a condition and a criterion?</p>
+              <button class="option-btn" onclick="checkScenario('t6q2', 'A')">A. The learner will learn to create pivot tables</button>
+              <button class="option-btn" onclick="checkScenario('t6q2', 'B')">B. The learner will watch a demonstration of pivot tables</button>
+              <button class="option-btn" onclick="checkScenario('t6q2', 'C')">C. The learner will really create a good pivot table</button>
+              <button class="option-btn" onclick="checkScenario('t6q2', 'D')">D. Given a sales dataset and Excel, the learner will create a pivot table with no errors within 15 minutes</button>
+              <div id="feedback-t6q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>An objective says learners will "justify the choice of an LMS for a school", but the test asks them to match LMS names with logos. What is the main problem?</p>
+              <button class="option-btn" onclick="checkScenario('t6q3', 'A')">A. The objective is too broad</button>
+              <button class="option-btn" onclick="checkScenario('t6q3', 'B')">B. The assessment is not aligned with the cognitive level of the objective</button>
+              <button class="option-btn" onclick="checkScenario('t6q3', 'C')">C. The test is too long</button>
+              <button class="option-btn" onclick="checkScenario('t6q3', 'D')">D. The logos are unclear</button>
+              <div id="feedback-t6q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>"Compare ADDIE and SAM for a given project and recommend one with reasons." Which Bloom level does the whole task most clearly reach?</p>
+              <button class="option-btn" onclick="checkScenario('t6q4', 'A')">A. Understand</button>
+              <button class="option-btn" onclick="checkScenario('t6q4', 'B')">B. Evaluate</button>
+              <button class="option-btn" onclick="checkScenario('t6q4', 'C')">C. Apply</button>
+              <button class="option-btn" onclick="checkScenario('t6q4', 'D')">D. Analyse only</button>
+              <div id="feedback-t6q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>Which objective is at the "Create" level of the revised Bloom taxonomy?</p>
+              <button class="option-btn" onclick="checkScenario('t6q5', 'A')">A. List the criteria used in rubrics</button>
+              <button class="option-btn" onclick="checkScenario('t6q5', 'B')">B. Explain what a rubric is</button>
+              <button class="option-btn" onclick="checkScenario('t6q5', 'C')">C. Design a rubric for assessing an online discussion in a given course</button>
+              <button class="option-btn" onclick="checkScenario('t6q5', 'D')">D. Use a rubric to mark a sample essay</button>
+              <div id="feedback-t6q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>A lecturer writes: "Students will appreciate the importance of data privacy." Which rewrite is most measurable while respecting the affective intent?</p>
+              <button class="option-btn" onclick="checkScenario('t6q6', 'A')">A. Students will learn about data privacy</button>
+              <button class="option-btn" onclick="checkScenario('t6q6', 'B')">B. Students will defend a position on a data-privacy dilemma in a structured debate using at least three arguments</button>
+              <button class="option-btn" onclick="checkScenario('t6q6', 'C')">C. Students will be aware of data privacy</button>
+              <button class="option-btn" onclick="checkScenario('t6q6', 'D')">D. Students will know data privacy rules</button>
+              <div id="feedback-t6q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>"Assemble a network cable and test connectivity with a cable tester." Which domain of learning is mainly involved?</p>
+              <button class="option-btn" onclick="checkScenario('t6q7', 'A')">A. Cognitive</button>
+              <button class="option-btn" onclick="checkScenario('t6q7', 'B')">B. Affective</button>
+              <button class="option-btn" onclick="checkScenario('t6q7', 'C')">C. Metacognitive</button>
+              <button class="option-btn" onclick="checkScenario('t6q7', 'D')">D. Psychomotor</button>
+              <div id="feedback-t6q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>Consider: "Given a diagram, identify the parts of a computer with at least 8 out of 10 correct." Which ABCD element is missing?</p>
+              <button class="option-btn" onclick="checkScenario('t6q8', 'A')">A. Audience</button>
+              <button class="option-btn" onclick="checkScenario('t6q8', 'B')">B. Condition</button>
+              <button class="option-btn" onclick="checkScenario('t6q8', 'C')">C. Behaviour</button>
+              <button class="option-btn" onclick="checkScenario('t6q8', 'D')">D. Degree</button>
+              <div id="feedback-t6q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>A course objective list includes "understand" and "know" verbs. A designer rewrites them with observable verbs. What must also be revised to maintain alignment?</p>
+              <button class="option-btn" onclick="checkScenario('t6q9', 'A')">A. Only the textbook cover</button>
+              <button class="option-btn" onclick="checkScenario('t6q9', 'B')">B. Only the course title</button>
+              <button class="option-btn" onclick="checkScenario('t6q9', 'C')">C. The assessment and learning activities so they match the new performance level</button>
+              <button class="option-btn" onclick="checkScenario('t6q9', 'D')">D. Nothing else</button>
+              <div id="feedback-t6q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>An objective reads: "Learners will define terms, analyse case studies and design a full course." What is the main weakness?</p>
+              <button class="option-btn" onclick="checkScenario('t6q10', 'A')">A. It is too measurable</button>
+              <button class="option-btn" onclick="checkScenario('t6q10', 'B')">B. It mixes outcomes at different cognitive levels, making assessment and feedback unclear; it should be split</button>
+              <button class="option-btn" onclick="checkScenario('t6q10', 'C')">C. It is too short</button>
+              <button class="option-btn" onclick="checkScenario('t6q10', 'D')">D. It uses too many action verbs and should use none</button>
+              <div id="feedback-t6q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>A course objective is "Create a lesson plan", yet all activities are lectures and note-taking. What gap exists?</p>
+              <button class="option-btn" onclick="checkScenario('t6q11', 'A')">A. Assessment is missing</button>
+              <button class="option-btn" onclick="checkScenario('t6q11', 'B')">B. Learning activities do not give practice in the objective's performance</button>
+              <button class="option-btn" onclick="checkScenario('t6q11', 'C')">C. Lectures cannot be used in any course</button>
+              <button class="option-btn" onclick="checkScenario('t6q11', 'D')">D. The objective is too low</button>
+              <div id="feedback-t6q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>"To explain the concept of networks to students." What is wrong with this as a learning objective?</p>
+              <button class="option-btn" onclick="checkScenario('t6q12', 'A')">A. It uses an observable verb</button>
+              <button class="option-btn" onclick="checkScenario('t6q12', 'B')">B. It is too specific</button>
+              <button class="option-btn" onclick="checkScenario('t6q12', 'C')">C. It has a condition</button>
+              <button class="option-btn" onclick="checkScenario('t6q12', 'D')">D. It describes the teacher's action instead of the learner's expected performance</button>
+              <div id="feedback-t6q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>Which description of the revised Bloom taxonomy (2001) is most accurate?</p>
+              <button class="option-btn" onclick="checkScenario('t6q13', 'A')">A. It has five levels and Evaluate at the top</button>
+              <button class="option-btn" onclick="checkScenario('t6q13', 'B')">B. It excludes the knowledge dimension</button>
+              <button class="option-btn" onclick="checkScenario('t6q13', 'C')">C. It uses nouns for every level</button>
+              <button class="option-btn" onclick="checkScenario('t6q13', 'D')">D. It uses action verbs, has six levels with Create at the top, and adds a knowledge dimension (factual, conceptual, procedural, metacognitive)</button>
+              <div id="feedback-t6q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>An objective is at the Apply level: "Use a gradebook to calculate and publish term results." Which assessment is best aligned?</p>
+              <button class="option-btn" onclick="checkScenario('t6q14', 'A')">A. Multiple-choice questions about gradebook definitions</button>
+              <button class="option-btn" onclick="checkScenario('t6q14', 'B')">B. An attendance record</button>
+              <button class="option-btn" onclick="checkScenario('t6q14', 'C')">C. A reflective essay about gradebooks</button>
+              <button class="option-btn" onclick="checkScenario('t6q14', 'D')">D. A performance task in which learners calculate and publish results in a sample gradebook, scored with a checklist or rubric</button>
+              <div id="feedback-t6q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>"By the end of a one-hour session, learners will design, build, test and publish a complete e-learning course." Which critique is most valid?</p>
+              <button class="option-btn" onclick="checkScenario('t6q15', 'A')">A. The scope is unrealistic for the time and should be narrowed to what can be achieved and assessed</button>
+              <button class="option-btn" onclick="checkScenario('t6q15', 'B')">B. The audience is missing</button>
+              <button class="option-btn" onclick="checkScenario('t6q15', 'C')">C. The objective is not learner-centred</button>
+              <button class="option-btn" onclick="checkScenario('t6q15', 'D')">D. The verbs are not observable</button>
+              <div id="feedback-t6q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOPIC 7: DESIGNING ASSESSMENTS             -->
+    <!-- ========================================== -->
+    <div id="module-topic7" class="module-wrapper">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t7-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t7-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t7-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 7: Designing Assessments</h2>
+            <p><strong>Week 7 | Formative and summative assessment, authentic assessment, rubrics, alignment</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>Assessment answers the question: "How do we know learners have learned what we intended?" In instructional design, assessment is planned before activities are created. This approach is called backward design (Wiggins and McTighe, 2005): first decide the desired results, then decide the evidence, then plan learning activities.</p>
+            <p>Do not confuse assessment with evaluation. Assessment measures learner performance. Evaluation judges the quality of the instruction (see Topic 13).</p>
+
+            <h3 class="section-title">1. Formative vs. Summative Assessment</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Formative</th>
+                    <th>Summative</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Purpose</strong></td>
+                    <td>To improve learning (assessment FOR learning)</td>
+                    <td>To measure achievement at the end (assessment OF learning)</td>
+                  </tr>
+                  <tr>
+                    <td><strong>When</strong></td>
+                    <td>During instruction</td>
+                    <td>At the end of a unit, course or programme</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Stakes</strong></td>
+                    <td>Low or no marks</td>
+                    <td>High marks; grades and certificates</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Feedback</strong></td>
+                    <td>Immediate and detailed</td>
+                    <td>Often a final grade</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Examples</strong></td>
+                    <td>Quick quizzes, polls, discussion posts, drafts, exit tickets, self-checks</td>
+                    <td>End-of-semester exam, final project, certification test</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="info-box">
+              <strong>Example:</strong> In a Moodle course, a short non-graded quiz after each lesson (formative) helps learners check understanding. The final proctored exam at the end (summative) decides the grade.
+            </div>
+            <ul>
+              <li><strong>Diagnostic assessment:</strong> before instruction, to find existing knowledge (pre-test).</li>
+              <li><strong>Ipsative assessment:</strong> comparing a learner with their own past performance.</li>
+            </ul>
+
+            <h3 class="section-title">2. Types of Test Items</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Examples</th>
+                    <th>Strength</th>
+                    <th>Weakness</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Objective items</strong></td>
+                    <td>Multiple choice, true/false, matching, fill-in-the-blank</td>
+                    <td>Fast to mark, reliable, easy to automate online</td>
+                    <td>Can test only recall; guessing is possible</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Subjective items</strong></td>
+                    <td>Essay, short answer, case analysis</td>
+                    <td>Test higher-order thinking and writing</td>
+                    <td>Slow to mark; marker bias possible</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Performance items</strong></td>
+                    <td>Practical tasks, presentations, projects, demonstrations</td>
+                    <td>Test real skills</td>
+                    <td>Time-consuming; need clear rubrics</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p><strong>Tips for writing good multiple-choice questions</strong></p>
+            <ul>
+              <li>Write a clear question (stem) with one best answer.</li>
+              <li>Make all options similar in length and believable (good distractors).</li>
+              <li>Avoid "all of the above" and "none of the above" where possible.</li>
+              <li>Avoid negative wording.</li>
+              <li>Test understanding and application, not only memory.</li>
+            </ul>
+
+            <h3 class="section-title">3. Authentic Assessment</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> Authentic assessment asks learners to perform real-world tasks that show meaningful application of knowledge and skills.
+            </div>
+            <ul>
+              <li>Tasks are realistic, complex and meaningful.</li>
+              <li>Learners produce a product or performance.</li>
+              <li>Standards are clear and criteria are known in advance.</li>
+              <li>Often includes reflection, peer feedback and portfolios.</li>
+            </ul>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Traditional</th>
+                    <th>Authentic</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Write an essay on what a lesson plan is</td><td>Create and teach a real lesson plan, and reflect on it</td></tr>
+                  <tr><td>Multiple-choice test on networking terms</td><td>Set up a small working network and document it</td></tr>
+                  <tr><td>List parts of a website</td><td>Build a simple website for a local business</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">4. Designing Rubrics</h3>
+            <div class="alert-box">
+              <strong>Definition:</strong> A rubric is a scoring guide that lists criteria and describes levels of performance for each criterion.
+            </div>
+            <ul>
+              <li><strong>Analytic rubric:</strong> scores each criterion separately (more detailed feedback).</li>
+              <li><strong>Holistic rubric:</strong> gives one overall score (faster, less detail).</li>
+            </ul>
+
+            <p><strong>Sample analytic rubric for an e-learning module</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Criterion</th>
+                    <th>Excellent (4)</th>
+                    <th>Good (3)</th>
+                    <th>Fair (2)</th>
+                    <th>Weak (1)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Objectives</td><td>Clear, measurable, aligned</td><td>Mostly measurable</td><td>Some vague</td><td>Missing or unclear</td></tr>
+                  <tr><td>Content quality</td><td>Accurate, organised</td><td>Mostly accurate</td><td>Some errors</td><td>Many errors</td></tr>
+                  <tr><td>Interactivity</td><td>Highly engaging</td><td>Some interaction</td><td>Minimal</td><td>None</td></tr>
+                  <tr><td>Accessibility</td><td>Fully accessible</td><td>Mostly accessible</td><td>Partly</td><td>Not accessible</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Benefits: clear expectations, fair marking, useful feedback, supports self- and peer assessment.</p>
+            <p>Steps: choose criteria linked to objectives, decide performance levels, write clear descriptors, weight the criteria, test the rubric and share it with learners before the task.</p>
+
+            <h3 class="section-title">5. Quality Characteristics of Good Assessments</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Quality</th>
+                    <th>Meaning</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Validity</td><td>Measures what it is supposed to measure</td><td>A practical task to test typing speed is valid; a theory test is not</td></tr>
+                  <tr><td>Reliability</td><td>Gives consistent results</td><td>Two markers give similar marks using the same rubric</td></tr>
+                  <tr><td>Fairness</td><td>Free from bias; same chance for all learners</td><td>Accessible format for learners with visual impairment</td></tr>
+                  <tr><td>Practicality</td><td>Feasible in time, cost and resources</td><td>Auto-marked online quiz for 500 learners</td></tr>
+                  <tr><td>Authenticity</td><td>Resembles real tasks</td><td>Create a real lesson plan</td></tr>
+                  <tr><td>Alignment</td><td>Matches objectives and activities</td><td>Objective "design" is assessed with a design task</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3 class="section-title">6. Alignment: The Triangle of Instruction</h3>
+            <p>Good instruction aligns three things: objectives, assessments and learning activities (constructive alignment, Biggs). If one is changed, the others must be checked.</p>
+            <div class="alert-box">
+              <strong>Key Point:</strong> The objective verb decides the assessment. "Explain" is assessed with explanation; "Demonstrate" is assessed with demonstration; "Create" is assessed with a product and rubric.
+            </div>
+
+            <p><strong>Assessment in online learning</strong></p>
+            <ul>
+              <li>Use varied, low-stakes quizzes, discussions, projects and e-portfolios.</li>
+              <li>Use question banks, randomisation and time limits to reduce cheating.</li>
+              <li>Prefer authentic tasks and open-book questions that need application.</li>
+              <li>Give timely feedback; use automated feedback where helpful.</li>
+              <li>Consider internet access and accessibility.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="tab-t7-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A course has only one high-stakes final exam. Many learners fail and say they never knew where they were going wrong. Which design change best addresses this?</p>
+              <button class="option-btn" onclick="checkScenario('t7q1', 'A')">A. Replace the exam with an attendance score</button>
+              <button class="option-btn" onclick="checkScenario('t7q1', 'B')">B. Add frequent low-stakes formative assessments with timely feedback before the final exam</button>
+              <button class="option-btn" onclick="checkScenario('t7q1', 'C')">C. Remove all feedback to keep marks fair</button>
+              <button class="option-btn" onclick="checkScenario('t7q1', 'D')">D. Make the final exam longer</button>
+              <div id="feedback-t7q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>Two markers give very different marks to the same essays. Which improvement will most directly raise reliability?</p>
+              <button class="option-btn" onclick="checkScenario('t7q2', 'A')">A. Use more difficult questions</button>
+              <button class="option-btn" onclick="checkScenario('t7q2', 'B')">B. Increase the essay length</button>
+              <button class="option-btn" onclick="checkScenario('t7q2', 'C')">C. Use an analytic rubric with clear level descriptors and hold a moderation session</button>
+              <button class="option-btn" onclick="checkScenario('t7q2', 'D')">D. Ask learners to mark their own essays only</button>
+              <div id="feedback-t7q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>A trainer wants to assess typing speed and accuracy but gives a written test on the history of the keyboard. Which quality of assessment is most clearly lacking?</p>
+              <button class="option-btn" onclick="checkScenario('t7q3', 'A')">A. Reliability</button>
+              <button class="option-btn" onclick="checkScenario('t7q3', 'B')">B. Fairness</button>
+              <button class="option-btn" onclick="checkScenario('t7q3', 'C')">C. Practicality</button>
+              <button class="option-btn" onclick="checkScenario('t7q3', 'D')">D. Validity</button>
+              <div id="feedback-t7q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>The objective is "Set up a small working network and document it." Which assessment is most appropriate?</p>
+              <button class="option-btn" onclick="checkScenario('t7q4', 'A')">A. A matching test of cable types</button>
+              <button class="option-btn" onclick="checkScenario('t7q4', 'B')">B. A multiple-choice test on network terms</button>
+              <button class="option-btn" onclick="checkScenario('t7q4', 'C')">C. An essay on network history</button>
+              <button class="option-btn" onclick="checkScenario('t7q4', 'D')">D. A practical task in which learners build and document a network, scored with a checklist or rubric</button>
+              <div id="feedback-t7q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>A teacher chooses activities and videos first, then writes the test from whatever was covered. Which critique reflects backward design?</p>
+              <button class="option-btn" onclick="checkScenario('t7q5', 'A')">A. Backward design applies only to science subjects</button>
+              <button class="option-btn" onclick="checkScenario('t7q5', 'B')">B. Tests should never be written</button>
+              <button class="option-btn" onclick="checkScenario('t7q5', 'C')">C. Activities should always come before objectives</button>
+              <button class="option-btn" onclick="checkScenario('t7q5', 'D')">D. Desired results and acceptable evidence should be defined first, then activities planned to lead learners to that evidence</button>
+              <div id="feedback-t7q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>Learners notice that in a multiple-choice test the correct answer is usually the longest option. What is the main flaw?</p>
+              <button class="option-btn" onclick="checkScenario('t7q6', 'A')">A. The test is too reliable</button>
+              <button class="option-btn" onclick="checkScenario('t7q6', 'B')">B. The questions are too authentic</button>
+              <button class="option-btn" onclick="checkScenario('t7q6', 'C')">C. Distractors are implausible and the item gives cues, so the test measures test-wiseness rather than understanding</button>
+              <button class="option-btn" onclick="checkScenario('t7q6', 'D')">D. The test is too long</button>
+              <div id="feedback-t7q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>A university must assess 500 distance learners online and is worried about cheating. Which design best protects validity and integrity?</p>
+              <button class="option-btn" onclick="checkScenario('t7q7', 'A')">A. Use one identical fixed exam for everyone</button>
+              <button class="option-btn" onclick="checkScenario('t7q7', 'B')">B. Remove assessment entirely</button>
+              <button class="option-btn" onclick="checkScenario('t7q7', 'C')">C. Use authentic application tasks, randomised items from a question bank, time limits and some oral or reflective components</button>
+              <button class="option-btn" onclick="checkScenario('t7q7', 'D')">D. Ask only for definitions that can be searched easily</button>
+              <div id="feedback-t7q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>A lecturer wants learners to receive detailed feedback on four separate criteria in a design project. Which rubric type is most suitable?</p>
+              <button class="option-btn" onclick="checkScenario('t7q8', 'A')">A. Holistic rubric</button>
+              <button class="option-btn" onclick="checkScenario('t7q8', 'B')">B. Analytic rubric</button>
+              <button class="option-btn" onclick="checkScenario('t7q8', 'C')">C. A checklist with only pass/fail</button>
+              <button class="option-btn" onclick="checkScenario('t7q8', 'D')">D. A single overall grade</button>
+              <div id="feedback-t7q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>An exam is provided only as scanned images of text, so screen readers cannot read it. Which quality is most compromised and what is the best fix?</p>
+              <button class="option-btn" onclick="checkScenario('t7q9', 'A')">A. Reliability; add more questions</button>
+              <button class="option-btn" onclick="checkScenario('t7q9', 'B')">B. Practicality; reduce the exam length</button>
+              <button class="option-btn" onclick="checkScenario('t7q9', 'C')">C. Authenticity; make questions harder</button>
+              <button class="option-btn" onclick="checkScenario('t7q9', 'D')">D. Fairness; provide an accessible text version and alternative formats</button>
+              <div id="feedback-t7q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>Before starting a training programme, a trainer wants to know what participants already know in order to pitch the course appropriately. Which assessment is best?</p>
+              <button class="option-btn" onclick="checkScenario('t7q10', 'A')">A. Final certification test</button>
+              <button class="option-btn" onclick="checkScenario('t7q10', 'B')">B. Portfolio at the end</button>
+              <button class="option-btn" onclick="checkScenario('t7q10', 'C')">C. Diagnostic pre-assessment</button>
+              <button class="option-btn" onclick="checkScenario('t7q10', 'D')">D. Summative exam</button>
+              <div id="feedback-t7q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>800 students must be assessed, and essay marking cannot be completed in the three days available. Which approach best balances validity and practicality?</p>
+              <button class="option-btn" onclick="checkScenario('t7q11', 'A')">A. Cancel the assessment</button>
+              <button class="option-btn" onclick="checkScenario('t7q11', 'B')">B. Mark only the first 100 essays</button>
+              <button class="option-btn" onclick="checkScenario('t7q11', 'C')">C. Give everyone the same mark</button>
+              <button class="option-btn" onclick="checkScenario('t7q11', 'D')">D. Combine auto-marked application items with a rubric-scored performance task, using sampling and moderation for the latter</button>
+              <div id="feedback-t7q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>Which set of objective, activity and assessment is best aligned?</p>
+              <button class="option-btn" onclick="checkScenario('t7q12', 'A')">A. Objective: create; activity: videos only; assessment: true/false</button>
+              <button class="option-btn" onclick="checkScenario('t7q12', 'B')">B. Objective: apply; activity: reading; assessment: attendance</button>
+              <button class="option-btn" onclick="checkScenario('t7q12', 'C')">C. Objective: analyse; activity: lecture note-taking; assessment: list definitions</button>
+              <button class="option-btn" onclick="checkScenario('t7q12', 'D')">D. Objective: compare two models; activity: case-study discussion; assessment: structured comparison essay with rubric</button>
+              <div id="feedback-t7q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>85% of learners fail one test item, though they performed well on others. Which response best reflects good assessment practice?</p>
+              <button class="option-btn" onclick="checkScenario('t7q13', 'A')">A. Examine the item for flaws and the related instruction for weaknesses before drawing conclusions about learners</button>
+              <button class="option-btn" onclick="checkScenario('t7q13', 'B')">B. Delete the item silently and ignore the cause</button>
+              <button class="option-btn" onclick="checkScenario('t7q13', 'C')">C. Assume the learners were lazy</button>
+              <button class="option-btn" onclick="checkScenario('t7q13', 'D')">D. Penalise the learners</button>
+              <div id="feedback-t7q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>A rubric for a course-design project gives 40% to "neatness of slides" and 5% to "alignment of objectives and assessment", although alignment is a major course outcome. What is the key problem?</p>
+              <button class="option-btn" onclick="checkScenario('t7q14', 'A')">A. The weighting does not reflect the importance of the intended learning outcomes</button>
+              <button class="option-btn" onclick="checkScenario('t7q14', 'B')">B. The rubric is shared with learners</button>
+              <button class="option-btn" onclick="checkScenario('t7q14', 'C')">C. The rubric uses levels</button>
+              <button class="option-btn" onclick="checkScenario('t7q14', 'D')">D. The rubric is too analytic</button>
+              <div id="feedback-t7q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>In a group project, some members do almost no work but receive the same marks. Which design most improves fairness while keeping collaboration?</p>
+              <button class="option-btn" onclick="checkScenario('t7q15', 'A')">A. Give everyone the lowest mark</button>
+              <button class="option-btn" onclick="checkScenario('t7q15', 'B')">B. Remove group projects</button>
+              <button class="option-btn" onclick="checkScenario('t7q15', 'C')">C. Let the strongest member decide marks</button>
+              <button class="option-btn" onclick="checkScenario('t7q15', 'D')">D. Combine a group product rubric with individual components, such as peer evaluation and reflections</button>
+              <div id="feedback-t7q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOPIC 8: STRATEGIES & MEDIA                -->
+    <!-- ========================================== -->
+    <div id="module-topic8" class="module-wrapper">
+      <nav>
+        <div class="nav-container">
+          <button class="nav-btn active" onclick="switchTab('tab-t8-content', this)">Content</button>
+          <button class="nav-btn" onclick="switchTab('tab-t8-quiz', this)">Practice Questions (15)</button>
+        </div>
+      </nav>
+
+      <main>
+        <section id="tab-t8-content" class="tab-content active">
+          <div class="card">
+            <h2 class="card-title">Topic 8: Instructional Strategies and Media Selection</h2>
+            <p><strong>Week 8 | Gagné's Nine Events, Merrill's First Principles, media selection, ASSURE model</strong></p>
+            
+            <h3 class="section-title">Overview</h3>
+            <p>After deciding what learners must achieve (objectives) and how to check it (assessment), the designer decides how to teach it. This is the choice of instructional strategies (the plan and methods) and media (the tools and channels that carry the message).</p>
+            <p>This topic introduces two major frameworks for planning instruction (Gagné's Nine Events and Merrill's First Principles), and a practical planning model for media use, the ASSURE model.</p>
+
+            <h3 class="section-title">1. Gagné's Nine Events of Instruction</h3>
+            <p>Robert Gagné linked the way we teach to the internal mental processes of learning (cognitivist). The nine events form a checklist for a complete lesson.</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>Event</th>
+                    <th>Purpose</th>
+                    <th>Example in a lesson on "Using a spreadsheet"</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>Gain attention</td><td>Arouse interest</td><td>Show a messy paper record versus a clean spreadsheet</td></tr>
+                  <tr><td>2</td><td>Inform learners of objectives</td><td>Set expectations</td><td>"By the end you will create a budget with formulas"</td></tr>
+                  <tr><td>3</td><td>Stimulate recall of prior learning</td><td>Link to what they know</td><td>Ask: "How do you keep a record of money now?"</td></tr>
+                  <tr><td>4</td><td>Present the content</td><td>Provide new information</td><td>Demonstrate cells, rows, columns and formulas</td></tr>
+                  <tr><td>5</td><td>Provide learning guidance</td><td>Help understanding</td><td>Worked examples, tips, step-by-step guide</td></tr>
+                  <tr><td>6</td><td>Elicit performance (practice)</td><td>Let learners try</td><td>Learners create a simple budget</td></tr>
+                  <tr><td>7</td><td>Provide feedback</td><td>Correct and encourage</td><td>Teacher or peer comments on errors</td></tr>
+                  <tr><td>8</td><td>Assess performance</td><td>Check achievement</td><td>A short practical test</td></tr>
+                  <tr><td>9</td><td>Enhance retention and transfer</td><td>Make learning last</td><td>Apply to a real task, such as the class fund</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert-box">
+              <strong>Key Point:</strong> Memory aid for the order: Attention -> Objectives -> Recall -> Content -> Guidance -> Practice -> Feedback -> Assessment -> Transfer.
+            </div>
+
+            <h3 class="section-title">2. Merrill's First Principles of Instruction</h3>
+            <p>M. David Merrill reviewed many theories and found five principles common to effective instruction. Learning is promoted when:</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Principle</th>
+                    <th>Meaning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1. Problem-centred (task-centred)</td><td>Learners work on real-world problems or tasks</td></tr>
+                  <tr><td>2. Activation</td><td>Existing knowledge is activated as a foundation for new learning</td></tr>
+                  <tr><td>3. Demonstration</td><td>New knowledge is demonstrated to the learner (not just told)</td></tr>
+                  <tr><td>4. Application</td><td>Learners apply new knowledge, with feedback</td></tr>
+                  <tr><td>5. Integration</td><td>Learners integrate new knowledge into everyday life through reflection, discussion or presentation</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="info-box">
+              <strong>Example:</strong> A course on web design begins with the task "Build a website for a local shop" (problem), reviews learners' prior experience with documents (activation), demonstrates HTML basics (demonstration), lets learners build pages with feedback (application), and has them present their sites to the shop owner (integration).
+            </div>
+
+            <h3 class="section-title">3. Common Instructional Strategies</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Strategy</th>
+                    <th>Description</th>
+                    <th>Suits</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Direct instruction / lecture</td><td>Teacher presents information clearly</td><td>Basic facts, large groups</td></tr>
+                  <tr><td>Demonstration</td><td>Show how something is done</td><td>Procedures, software skills</td></tr>
+                  <tr><td>Discussion</td><td>Learners exchange ideas</td><td>Concepts, opinions</td></tr>
+                  <tr><td>Cooperative / collaborative learning</td><td>Groups work towards a common goal</td><td>Complex tasks, social skills</td></tr>
+                  <tr><td>Problem-based learning (PBL)</td><td>Learners solve an open-ended problem</td><td>Real-world thinking</td></tr>
+                  <tr><td>Project-based learning</td><td>Learners produce a product over time</td><td>Application and creation</td></tr>
+                  <tr><td>Case study</td><td>Analysis of real situations</td><td>Analysis and judgement</td></tr>
+                  <tr><td>Simulation and games</td><td>Safe imitation of real situations</td><td>Risky or costly practice</td></tr>
+                  <tr><td>Flipped classroom</td><td>Content at home (video), practice in class</td><td>Active class time</td></tr>
+                  <tr><td>Self-paced / individualised</td><td>Learners move at their own speed</td><td>Mixed ability, online</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <ul>
+              <li><strong>Teacher-centred strategies:</strong> lecture, demonstration.</li>
+              <li><strong>Learner-centred strategies:</strong> PBL, projects, discussion, collaboration.</li>
+              <li>Choose according to the objective, learners, context and resources.</li>
+            </ul>
+
+            <h3 class="section-title">4. Selecting Media and Technology</h3>
+            <p>Media are the carriers of instructional messages: print, audio, video, graphics, computers, mobile devices, the internet. Media should serve the objective; they should never be chosen only because they are fashionable.</p>
+            
+            <p><strong>Criteria for choosing media</strong></p>
+            <ul>
+              <li>Alignment with objectives and learners.</li>
+              <li>Accessibility and availability (do learners have devices, power and data?).</li>
+              <li>Cost (purchase, development, maintenance).</li>
+              <li>Technical quality and ease of use.</li>
+              <li>Instructor and learner skill to use it.</li>
+              <li>Interactivity and engagement.</li>
+              <li>Time to produce.</li>
+            </ul>
+
+            <p><strong>Matching media to purpose</strong></p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Purpose</th>
+                    <th>Suitable media</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Show a process or motion (e.g., how data moves in a network)</td><td>Video, animation, simulation</td></tr>
+                  <tr><td>Teach procedures in software</td><td>Screencast tutorial</td></tr>
+                  <tr><td>Discussion and collaboration</td><td>Forums, WhatsApp groups, video conferencing</td></tr>
+                  <tr><td>Practice and feedback</td><td>Online quizzes, interactive H5P</td></tr>
+                  <tr><td>Reference material for low-bandwidth learners</td><td>PDF notes, printed handouts, audio</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="alert-box">
+              <strong>Key Point:</strong> Technology does not by itself improve learning. The strategy matters more than the medium. A simple tool used with a sound strategy beats an expensive tool used poorly.
+            </div>
+
+            <h3 class="section-title">5. The ASSURE Model</h3>
+            <p>ASSURE (Heinich, Molenda, Russell, Smaldino) is a practical six-step model for planning lessons that integrate media and technology.</p>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Letter</th>
+                    <th>Step</th>
+                    <th>What you do</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>A</td><td>Analyse learners</td><td>Study characteristics, prior knowledge and learning preferences</td></tr>
+                  <tr><td>S</td><td>State standards and objectives</td><td>Write measurable objectives (ABCD) linked to standards</td></tr>
+                  <tr><td>S</td><td>Select strategies, technology, media and materials</td><td>Choose, modify or design resources</td></tr>
+                  <tr><td>U</td><td>Utilise technology, media and materials</td><td>Preview, prepare environment and learners, present</td></tr>
+                  <tr><td>R</td><td>Require learner participation</td><td>Active practice with feedback</td></tr>
+                  <tr><td>E</td><td>Evaluate and revise</td><td>Assess learner achievement and the lesson, then improve</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="info-box">
+              <strong>Example:</strong> A teacher planning a lesson on "Parts of a computer": analyses the Basic 8 class; states the objective; selects a video and real hardware; previews the video and prepares the lab; makes pupils label parts in groups; evaluates with a quiz and revises the lesson.
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-t8-quiz" class="tab-content">
+          <div class="card">
+            <h2 class="card-title">Fifteen Multiple-Choice Questions (Application and Analysis)</h2>
+
+            <div class="scenario-box">
+              <h4>Question 1</h4>
+              <p>A lesson on spreadsheets begins directly with formulas on slide 1, without any introduction or connection to learners' experience. Which Gagné events are most clearly missing at the start?</p>
+              <button class="option-btn" onclick="checkScenario('t8q1', 'A')">A. Gain attention, inform learners of objectives, and stimulate recall of prior learning</button>
+              <button class="option-btn" onclick="checkScenario('t8q1', 'B')">B. Provide feedback only</button>
+              <button class="option-btn" onclick="checkScenario('t8q1', 'C')">C. Assess performance and enhance retention</button>
+              <button class="option-btn" onclick="checkScenario('t8q1', 'D')">D. Present content only</button>
+              <div id="feedback-t8q1" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 2</h4>
+              <p>A trainer begins a Moodle quiz session by asking: "How do you now prepare and mark paper tests?" Which Gagné event is this, and why does it help?</p>
+              <button class="option-btn" onclick="checkScenario('t8q2', 'A')">A. Stimulate recall of prior learning, because it links new learning to existing knowledge</button>
+              <button class="option-btn" onclick="checkScenario('t8q2', 'B')">B. Enhance retention, because it summarises the lesson</button>
+              <button class="option-btn" onclick="checkScenario('t8q2', 'C')">C. Present content, because it delivers new facts</button>
+              <button class="option-btn" onclick="checkScenario('t8q2', 'D')">D. Assess performance, because it checks mastery</button>
+              <div id="feedback-t8q2" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 3</h4>
+              <p>The objective is for learners to perform a multi-step software procedure. Which strategy sequence is most defensible?</p>
+              <button class="option-btn" onclick="checkScenario('t8q3', 'A')">A. Long lecture followed by an exam</button>
+              <button class="option-btn" onclick="checkScenario('t8q3', 'B')">B. Group debate then reflection</button>
+              <button class="option-btn" onclick="checkScenario('t8q3', 'C')">C. Reading assignment followed by discussion</button>
+              <button class="option-btn" onclick="checkScenario('t8q3', 'D')">D. Demonstration, guided practice with feedback, then independent practice</button>
+              <div id="feedback-t8q3" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 4</h4>
+              <p>A web-design course opens with the task "Build a website for a local shop", reviews learners' prior experience, demonstrates HTML, lets learners build with feedback, and ends with presentations to the shop owner. The last step corresponds to which Merrill principle?</p>
+              <button class="option-btn" onclick="checkScenario('t8q4', 'A')">A. Activation</button>
+              <button class="option-btn" onclick="checkScenario('t8q4', 'B')">B. Application</button>
+              <button class="option-btn" onclick="checkScenario('t8q4', 'C')">C. Demonstration</button>
+              <button class="option-btn" onclick="checkScenario('t8q4', 'D')">D. Integration</button>
+              <div id="feedback-t8q4" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 5</h4>
+              <p>An online unit consists of a video lecture followed by an unmarked quiz with no comments. Which essential elements are weak?</p>
+              <button class="option-btn" onclick="checkScenario('t8q5', 'A')">A. Gaining attention only</button>
+              <button class="option-btn" onclick="checkScenario('t8q5', 'B')">B. Copyright compliance</button>
+              <button class="option-btn" onclick="checkScenario('t8q5', 'C')">C. Use of video</button>
+              <button class="option-btn" onclick="checkScenario('t8q5', 'D')">D. Meaningful feedback and application of knowledge, which both Gagné and Merrill emphasise</button>
+              <div id="feedback-t8q5" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 6</h4>
+              <p>Learners in a district have unreliable electricity and costly data. Which media decision is most defensible for a core course?</p>
+              <button class="option-btn" onclick="checkScenario('t8q6', 'A')">A. A VR-based simulation</button>
+              <button class="option-btn" onclick="checkScenario('t8q6', 'B')">B. Mandatory live video each day</button>
+              <button class="option-btn" onclick="checkScenario('t8q6', 'C')">C. Downloadable PDFs, audio files and a WhatsApp support group, with a few scheduled live sessions</button>
+              <button class="option-btn" onclick="checkScenario('t8q6', 'D')">D. Daily streamed high-definition video</button>
+              <div id="feedback-t8q6" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 7</h4>
+              <p>An instructor wants learners to understand how data packets travel through a network. Which medium is most suitable and why?</p>
+              <button class="option-btn" onclick="checkScenario('t8q7', 'A')">A. A photograph of a router</button>
+              <button class="option-btn" onclick="checkScenario('t8q7', 'B')">B. A text handout, because text is cheap</button>
+              <button class="option-btn" onclick="checkScenario('t8q7', 'C')">C. An audio-only lecture, because audio is accessible</button>
+              <button class="option-btn" onclick="checkScenario('t8q7', 'D')">D. An animation or simulation, because it shows process and movement that are hard to convey in text</button>
+              <div id="feedback-t8q7" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 8</h4>
+              <p>Which strategy is most appropriate for an objective at the "Create" level, such as designing an online module?</p>
+              <button class="option-btn" onclick="checkScenario('t8q8', 'A')">A. Lecture on module design</button>
+              <button class="option-btn" onclick="checkScenario('t8q8', 'B')">B. Quizzes with immediate feedback</button>
+              <button class="option-btn" onclick="checkScenario('t8q8', 'C')">C. Project-based learning with milestones, feedback and peer review</button>
+              <button class="option-btn" onclick="checkScenario('t8q8', 'D')">D. Reading and note-taking</button>
+              <div id="feedback-t8q8" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 9</h4>
+              <p>A flipped-classroom plan assumes learners watch videos at home, but many lack data. Which adaptation best preserves the strategy?</p>
+              <button class="option-btn" onclick="checkScenario('t8q9', 'A')">A. Force learners to buy data</button>
+              <button class="option-btn" onclick="checkScenario('t8q9', 'B')">B. Provide offline-downloadable content, USB/lab access or short readings, and use class time for practice</button>
+              <button class="option-btn" onclick="checkScenario('t8q9', 'C')">C. Cancel class practice</button>
+              <button class="option-btn" onclick="checkScenario('t8q9', 'D')">D. Return to full lecturing</button>
+              <div id="feedback-t8q9" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 10</h4>
+              <p>A teacher previews a video, tests the projector and prepares the lab before the lesson. Which ASSURE step is this?</p>
+              <button class="option-btn" onclick="checkScenario('t8q10', 'A')">A. Require learner participation</button>
+              <button class="option-btn" onclick="checkScenario('t8q10', 'B')">B. Select strategies and media</button>
+              <button class="option-btn" onclick="checkScenario('t8q10', 'C')">C. Utilise technology, media and materials</button>
+              <button class="option-btn" onclick="checkScenario('t8q10', 'D')">D. Evaluate and revise</button>
+              <div id="feedback-t8q10" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 11</h4>
+              <p>A teacher selects a set of videos before analysing the learners or writing objectives. What is wrong from an ASSURE perspective?</p>
+              <button class="option-btn" onclick="checkScenario('t8q11', 'A')">A. Objectives should be written after the lesson</button>
+              <button class="option-btn" onclick="checkScenario('t8q11', 'B')">B. Videos are not allowed in ASSURE</button>
+              <button class="option-btn" onclick="checkScenario('t8q11', 'C')">C. Selection should follow analysis of learners and statement of objectives so that media serve the objectives</button>
+              <button class="option-btn" onclick="checkScenario('t8q11', 'D')">D. Nothing; resources should always come first</button>
+              <div id="feedback-t8q11" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 12</h4>
+              <p>In a cooperative project, a few learners do all the work. Which design feature best addresses this?</p>
+              <button class="option-btn" onclick="checkScenario('t8q12', 'A')">A. Assigned roles plus individual accountability and peer evaluation</button>
+              <button class="option-btn" onclick="checkScenario('t8q12', 'B')">B. Shorter deadlines</button>
+              <button class="option-btn" onclick="checkScenario('t8q12', 'C')">C. Free choice of groups with no roles</button>
+              <button class="option-btn" onclick="checkScenario('t8q12', 'D')">D. Larger groups</button>
+              <div id="feedback-t8q12" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 13</h4>
+              <p>A school buys expensive VR headsets to teach simple recall of vocabulary. Which critique is strongest?</p>
+              <button class="option-btn" onclick="checkScenario('t8q13', 'A')">A. Headsets reduce learner interest</button>
+              <button class="option-btn" onclick="checkScenario('t8q13', 'B')">B. VR cannot be used in schools</button>
+              <button class="option-btn" onclick="checkScenario('t8q13', 'C')">C. The medium is not matched to the objective; cost and complexity exceed what a recall task needs</button>
+              <button class="option-btn" onclick="checkScenario('t8q13', 'D')">D. Vocabulary should not be taught</button>
+              <div id="feedback-t8q13" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 14</h4>
+              <p>Which statement correctly compares Gagné's Nine Events and Merrill's First Principles?</p>
+              <button class="option-btn" onclick="checkScenario('t8q14', 'A')">A. Gagné's approach rejects feedback</button>
+              <button class="option-btn" onclick="checkScenario('t8q14', 'B')">B. Gagné stresses a sequence of events to support internal learning processes in a lesson, while Merrill places real-world tasks at the centre and cycles through activation, demonstration, application and integration</button>
+              <button class="option-btn" onclick="checkScenario('t8q14', 'C')">C. Both are identical lists of nine steps</button>
+              <button class="option-btn" onclick="checkScenario('t8q14', 'D')">D. Merrill's approach applies only to lectures</button>
+              <div id="feedback-t8q14" class="feedback-box"></div>
+            </div>
+
+            <div class="scenario-box">
+              <h4>Question 15</h4>
+              <p>A designer compares three media options: (1) high-quality video requiring streaming, (2) PDF plus audio, (3) an expensive simulation. Learners have phones, limited data and varying skills, and the objective is a basic procedure. Which choice best reflects selection criteria?</p>
+              <button class="option-btn" onclick="checkScenario('t8q15', 'A')">A. None; avoid media</button>
+              <button class="option-btn" onclick="checkScenario('t8q15', 'B')">B. Option 3, because it is most advanced</button>
+              <button class="option-btn" onclick="checkScenario('t8q15', 'C')">C. Option 1, because video is always superior</button>
+              <button class="option-btn" onclick="checkScenario('t8q15', 'D')">D. Option 2, possibly supplemented with a short downloadable screencast, because it fits access, cost and objective</button>
+              <div id="feedback-t8q15" class="feedback-box"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+  </div> <!-- End App Layout -->
+
+  <!-- FOOTER -->
+  <footer>
+    <div style="max-width: 1100px; margin: 0 auto;">
+      &copy; 2026 Prinesther Educational Consult | Instructional Design Module
+    </div>
+  </footer>
+
+  <script>
+    // Module Switcher for Top-Right Dropdown
+    function switchModule(moduleId) {
+      document.querySelectorAll('.module-wrapper').forEach(el => el.classList.remove('active'));
+      document.getElementById(moduleId).classList.add('active');
+    }
+
+    // Sub-Tab Switcher
+    function switchTab(tabId, btnElement) {
+      const activeModule = btnElement.closest('.module-wrapper');
+      
+      activeModule.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      activeModule.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      btnElement.classList.add('active');
+    }
+
+    // Interactive Knowledge Check Answers (Topics 6, 7, 8)
+    const scenarioAnswers = {
+      // Topic 6
+      't6q1': { correct: 'B', text: "Correct! Option B has the Audience (Form 2 students), Behavior (identify), Condition (labelled diagram), and Degree (8 out of 10)." },
+      't6q2': { correct: 'D', text: "Correct! It specifies the condition (sales dataset and Excel) and the criterion (no errors within 15 minutes)." },
+      't6q3': { correct: 'B', text: "Correct! The objective requires evaluation ('justify'), but the assessment only tests recall ('match names to logos')." },
+      't6q4': { correct: 'B', text: "Correct! Recommending one with reasons based on a comparison requires making judgements, which is 'Evaluate'." },
+      't6q5': { correct: 'C', text: "Correct! Designing a rubric requires putting elements together to form something new, which is 'Create'." },
+      't6q6': { correct: 'B', text: "Correct! 'Defend a position' is an observable verb that measures the affective intent behind 'appreciate'." },
+      't6q7': { correct: 'D', text: "Correct! Assembling and testing hardware involves physical/manual skills, which falls under the psychomotor domain." },
+      't6q8': { correct: 'A', text: "Correct! The objective is missing the 'Audience' (e.g., 'The learner will...')." },
+      't6q9': { correct: 'C', text: "Correct! To maintain alignment (the Triangle of Instruction), changing the verb requires changing the assessment and activities to match." },
+      't6q10': { correct: 'B', text: "Correct! A single objective should not mix multiple cognitive levels, as it makes accurate assessment impossible." },
+      't6q11': { correct: 'B', text: "Correct! If the objective is to 'Create', the activities must give learners practice in creating, not just note-taking." },
+      't6q12': { correct: 'D', text: "Correct! Objectives must describe what the LEARNER will do, not what the teacher will do." },
+      't6q13': { correct: 'D', text: "Correct! The 2001 revised taxonomy uses verbs, places Create at the top, and adds the knowledge dimension." },
+      't6q14': { correct: 'D', text: "Correct! A performance task using a gradebook is the only way to accurately assess the 'Apply' level." },
+      't6q15': { correct: 'A', text: "Correct! The criterion/time condition is unrealistic for the complexity of the performance requested." },
+      
+      // Topic 7
+      't7q1': { correct: 'B', text: "Correct! Formative assessments provide safe practice and feedback before a high-stakes summative exam." },
+      't7q2': { correct: 'C', text: "Correct! Rubrics ensure all markers use the exact same criteria and levels, increasing reliability." },
+      't7q3': { correct: 'D', text: "Correct! Validity means assessing what you actually intend to measure. Testing history does not measure typing speed." },
+      't7q4': { correct: 'D', text: "Correct! Setting up a network requires a performance task and a rubric, not a multiple-choice recall test." },
+      't7q5': { correct: 'D', text: "Correct! Backward design insists on defining the desired results and assessment evidence first, before planning activities." },
+      't7q6': { correct: 'C', text: "Correct! When distractors are poor, the item gives cues, measuring test-taking strategy rather than actual knowledge." },
+      't7q7': { correct: 'C', text: "Correct! Using authentic tasks, randomisation, and time limits drastically reduces the ability to cheat in online assessments." },
+      't7q8': { correct: 'B', text: "Correct! An analytic rubric scores each criterion separately, providing detailed, specific feedback." },
+      't7q9': { correct: 'D', text: "Correct! Fairness means providing equal opportunity to demonstrate knowledge; inaccessible formats compromise this." },
+      't7q10': { correct: 'C', text: "Correct! Diagnostic pre-assessments are used before instruction to identify existing knowledge gaps." },
+      't7q11': { correct: 'D', text: "Correct! Balancing auto-marked items with a sampled performance task maintains both practicality and validity." },
+      't7q12': { correct: 'D', text: "Correct! The objective 'compare' aligns perfectly with a 'case-study' activity and a 'comparison essay' assessment." },
+      't7q13': { correct: 'A', text: "Correct! If 85% of learners fail one item, the issue is highly likely a flawed question or a gap in instruction, not the learners." },
+      't7q14': { correct: 'A', text: "Correct! Rubric weights must align with the importance of the learning objectives. Alignment should weigh more than neatness." },
+      't7q15': { correct: 'D', text: "Correct! Individual accountability (like peer evaluations) ensures fairness within a collaborative project." },
+
+      // Topic 8
+      't8q1': { correct: 'A', text: "Correct! Gagné says you must gain attention, state the objective, and stimulate prior knowledge before presenting content." },
+      't8q2': { correct: 'A', text: "Correct! Asking how they currently do something stimulates recall of prior learning, building a bridge for new knowledge." },
+      't8q3': { correct: 'D', text: "Correct! A multi-step procedure is best taught through Demonstration, then Guided Practice, then Independent Practice." },
+      't8q4': { correct: 'D', text: "Correct! Presenting their work to a real shop owner 'integrates' the new knowledge into their everyday professional life." },
+      't8q5': { correct: 'D', text: "Correct! Both Gagné and Merrill emphasize that learners must apply knowledge and receive meaningful feedback." },
+      't8q6': { correct: 'C', text: "Correct! Downloadable offline files and lightweight chat (WhatsApp) respect the severe bandwidth and power constraints." },
+      't8q7': { correct: 'D', text: "Correct! Simulations and animations are uniquely suited for demonstrating continuous motion and hidden processes." },
+      't8q8': { correct: 'C', text: "Correct! Creating an entire module requires Project-Based Learning with milestones and peer review." },
+      't8q9': { correct: 'B', text: "Correct! If streaming fails, providing offline content preserves the flipped model (learning at home, practicing in class)." },
+      't8q10': { correct: 'C', text: "Correct! 'Utilise technology, media and materials' involves previewing and preparing the environment." },
+      't8q11': { correct: 'C', text: "Correct! The 'S' in ASSURE dictates that you State objectives BEFORE you Select strategies and media." },
+      't8q12': { correct: 'A', text: "Correct! Cooperative learning requires specific roles and individual accountability so everyone participates." },
+      't8q13': { correct: 'C', text: "Correct! Using expensive VR just to teach basic vocabulary is a severe mismatch between medium and objective." },
+      't8q14': { correct: 'B', text: "Correct! Gagné provides a linear event sequence, while Merrill cycles through problem-centered phases." },
+      't8q15': { correct: 'D', text: "Correct! Option 2 (PDF + Audio) is the most viable choice given the constraints of phones and limited data." }
+    };
+
+    function checkScenario(qNum, selected) {
+      const box = document.getElementById(`feedback-${qNum}`);
+      const data = scenarioAnswers[qNum];
+      box.style.display = 'block';
+
+      if (selected === data.correct) {
+        box.className = 'feedback-box feedback-correct';
+        box.innerText = data.text;
+      } else {
+        box.className = 'feedback-box feedback-wrong';
+        box.innerText = "✗ Incorrect. Please review the relevant topic notes.";
+      }
+    }
+  </script>
+</body>
+</html>
